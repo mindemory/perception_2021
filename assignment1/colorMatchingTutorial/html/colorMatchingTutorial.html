@@ -1,0 +1,859 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>colorMatchingTutorial</title>
+      <meta name="generator" content="MATLAB 7.1">
+      <meta name="date" content="2007-09-02">
+      <meta name="m-file" content="colorMatchingTutorial"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content"><pre class="codeinput"><span class="comment">% In this tutorial, we will introduce some basic spectral calculations that</span>
+<span class="comment">% we can use to understand color vision, surface reflectances, illuminants,</span>
+<span class="comment">% photoreceptor encoding, and trichromacy.</span>
+
+<span class="comment">% You will notice that much of the work below involves matrix algebra.  I</span>
+<span class="comment">% suggest that you pull out a pad of paper and draw matrix tableaus as we</span>
+<span class="comment">% proceed to help you follow the calculations.</span>
+
+<span class="comment">% Running the tutorial:</span>
+<span class="comment">% - Run matlab</span>
+<span class="comment">% - Change directory to the folder containing the tutorial using 'cd ' at</span>
+<span class="comment">% the matlab prompt.</span>
+<span class="comment">% - Type 'edit colorMatchingTutorial' at the matlab prompt to open this</span>
+<span class="comment">% file.</span>
+<span class="comment">% - Click on Cell in the menubar and select Enable Cell Mode.</span>
+<span class="comment">% - The tutorial is subdivided into sections called cells. Each cell</span>
+<span class="comment">% contains some comments and explanations along with some code. Click the</span>
+<span class="comment">% mouse in the first cell (sampling the visible spectrum) and use Evaluate</span>
+<span class="comment">% Current Cell from the Cell menu to evaluate the code segment in that</span>
+<span class="comment">% cell. Or use the keyboard shortcut (command-enter or apple-return on the</span>
+<span class="comment">% Mac). Continue reading the comments for each successive cell and then</span>
+<span class="comment">% evaluating it.</span>
+<span class="comment">% - Click on File in the menubar and select Save and then select Publish To</span>
+<span class="comment">% HTML to produce a version of this file with the results inserted at each</span>
+<span class="comment">% step, that you can view with a web browser. By default, the output is</span>
+<span class="comment">% saved in a subfolder called html.</span>
+<span class="comment">% - For more information about cell mode, choose Matlab Help from the Help</span>
+<span class="comment">% menu and search for "Rapid Code Iteration Using Cells"</span>
+</pre><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% SAMPLING THE VISIBLE SPECTRUM</span>
+
+<span class="comment">% Throughout, we will be sampling wavelenghts in 10nm steps from 400 to 700</span>
+<span class="comment">% so define the spectrum as follows:</span>
+
+spectrum = linspace(400,700,31);
+</pre><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% SURFACE REFLECTANCE</span>
+
+<span class="comment">% This loads in the macbeth color checker and the munsell</span>
+<span class="comment">% standard surfaces</span>
+
+load <span class="string">surfaces</span>  <span class="comment">% macbeth, munsell</span>
+size(macbeth)
+size(munsell)
+
+<span class="comment">% The Macbeth Color Checker is a set of 24 surfaces commonly used to</span>
+<span class="comment">% evaluate color balancing systems.  The materials in the Color Checker</span>
+<span class="comment">% were selected to have the same surface reflectance functions as various</span>
+<span class="comment">% important surfaces that are commonly used in television and film images.</span>
+<span class="comment">% We will read in a matrix of data.  Each row of the matrix is the</span>
+<span class="comment">% reflectance function of one of the Macbeth surfaces, measured at each of</span>
+<span class="comment">% 31 samples in the visible spectrum.  (Most of the visible spectrum is in</span>
+<span class="comment">% the 400-700 nanometers wavelength region.)  Thus the variable 'macbeth'</span>
+<span class="comment">% is a 24x31 matrix of surface spectra. Each row is the reflectance</span>
+<span class="comment">% function for one surface. Likewise, the 'munsell' variable is a 359x31</span>
+<span class="comment">% matrix in which each row is the reflectance function of a surface.</span>
+</pre><pre class="codeoutput">
+ans =
+
+    24    31
+
+
+ans =
+
+   359    31
+
+</pre><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% LOOK AT THE SURFACE REFLECTANCE SPECTRA</span>
+
+<span class="comment">% The 8th row of the macbeth is a surface that typically looks greenish. We</span>
+<span class="comment">% plot the fractional reflectance (as a function of wavelength) for this</span>
+<span class="comment">% surface.</span>
+
+figure(1);clf
+plot(spectrum,macbeth(8,:),<span class="string">'g'</span>);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Surface Reflectance'</span>);
+title(<span class="string">'Reflectance of Macbeth Surfaces'</span>);
+
+<span class="comment">% For example, about 28% of the light at wavelength 500 nm is</span>
+<span class="comment">% reflected by the "Green" surface.</span>
+
+green_500 = macbeth(8,find(spectrum==500))
+
+<span class="comment">% Here is the fractional reflectance of red surface:</span>
+
+hold <span class="string">on</span>
+plot(spectrum,macbeth(9,:),<span class="string">'r'</span>);
+
+<span class="comment">% And here it is for a gray surface:</span>
+
+plot(spectrum,macbeth(20,:),<span class="string">'b'</span>);
+hold <span class="string">off</span>
+</pre><pre class="codeoutput">
+green_500 =
+
+    0.2779
+
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_01.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% TYPICAL DAYLIGHT SPECTRUM</span>
+
+<span class="comment">% Now, load in the illuminants.  Each illuminant vector represents the</span>
+<span class="comment">% amount of light present at each wavelength. Again, the light is sampled</span>
+<span class="comment">% at 31 points in the visible spectrum, so we get vector of 31 numbers</span>
+<span class="comment">% representing the spectral power distribution (SPD) for that light.</span>
+
+load <span class="string">illuminants</span> <span class="comment">%cie_a,daylight_65,floursecent,illuminant_C,xenon_flash</span>
+
+<span class="comment">% Make a plot of daylight_65. Daylight_65 is the standard illuminant which</span>
+<span class="comment">% represents a mix of blue sky and clouds. Note: the energy units are</span>
+<span class="comment">% arbitrary.</span>
+
+figure(1);clf
+plot(spectrum,daylight_65,<span class="string">'k'</span>);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Energy'</span>);
+title(<span class="string">'Energy spectrum of daylight 65 Illimunant'</span>);
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_02.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% MORE ILLUMINANTS</span>
+
+<span class="comment">% Here are the spectral power distributions of some other illuminants.</span>
+<span class="comment">% Several of these are used as international standards for illuminants, as</span>
+<span class="comment">% specified by the CIE (an international standards committee for color</span>
+<span class="comment">% printing and technology).</span>
+
+figure(1);clf
+plot(spectrum,[cie_a',daylight_65',flourescent',illuminant_C',xenon_flash']);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Energy'</span>);
+title(<span class="string">'Energy Spectrum of Illuminants'</span>);
+legend(<span class="string">'cie a'</span>,<span class="string">'daylight 65'</span>,<span class="string">'flourescent'</span>,<span class="string">'illuminant C'</span>,<span class="string">'xenon flash'</span>);
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_03.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% CALCULATE THE SPECTRAL SIGNAL RESULTING FROM A LIGHT REFLECTING OFF A</span>
+<span class="comment">% MACBETH SURFACE</span>
+
+<span class="comment">% The spectral signal reaching the eye is the pointwise product of the</span>
+<span class="comment">% incident light and the reflectance of the surface at the each wavelength.</span>
+<span class="comment">% This can be computed using .* in matlab. Or it can be expressed as a</span>
+<span class="comment">% matrix product, where the surface reflectance is multiplied by a big</span>
+<span class="comment">% diagonal matrix with the light intensities at each wavelength along the</span>
+<span class="comment">% diagonal. As an example, plot the spectral signal coming off the green</span>
+<span class="comment">% Macbeth surface for daylight illumination.</span>
+
+spectralSignal = macbeth(8,:)' .* daylight_65';
+
+figure(1);clf
+plot(spectrum,spectralSignal,<span class="string">'g'</span>);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Reflected Energy'</span>);
+title(<span class="string">'Reflected energy of surfaces under daylight_65'</span>)
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_04.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% HUMAN CONE SPECTRAL SENSITIVITIES</span>
+
+<span class="comment">% Now we want to measure the photoresponses of the human cones to these</span>
+<span class="comment">% stimuli.  The human cone spectral sensitivities have been measured and</span>
+<span class="comment">% correspond closely with behavioral color matching data known for many</span>
+<span class="comment">% years. We now read in a matrix of the human cone sensitivities. There are</span>
+<span class="comment">% three classes of cone, the so-called L,M, and S cones with (L)ong-,</span>
+<span class="comment">% (M)iddle-, and (S)hort-wavelength peak sensitivities. We represent each</span>
+<span class="comment">% cone by its sensitivity at each of 31 sample wavelengths in the spectrum.</span>
+<span class="comment">% Thus, we have a 3x31 matrix representing the human cone spectral</span>
+<span class="comment">% sensitivities.</span>
+
+load <span class="string">cones</span>  <span class="comment">%cones</span>
+
+<span class="comment">% Look at the three cone classes superimposed.  Notice how close</span>
+<span class="comment">% the L and M cones are in terms of their peak sensitivities.</span>
+
+figure(1)
+clf
+plot(spectrum,cones(1,:),<span class="string">'r'</span>);
+hold <span class="string">on</span>
+plot(spectrum,cones(2,:),<span class="string">'g'</span>);
+plot(spectrum,cones(3,:),<span class="string">'b'</span>);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Relative Sensitivity'</span>);
+title(<span class="string">'Cone Spectral Sensitivity Functions'</span>);
+ylim([0 1]);
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_05.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% HUMAN CONE RESPONSES TO THE SPECTRAL SIGNAL</span>
+
+<span class="comment">% We can describe the photoreceptor responses as a matrix multiplication. The</span>
+<span class="comment">% matrix product of the receptor sensitivites and the  spectral</span>
+<span class="comment">% signal gives the photoisomerizations in each receptor class due to each</span>
+<span class="comment">% of the surfaces. The cone spectral sensitivity is a 3x31 matrix and the</span>
+<span class="comment">% spectralSignal is a 31x1 vector so the product is a vector of 3 numbers,</span>
+<span class="comment">% one for each of the cones (L, M, S).</span>
+
+coneSignals = cones * spectralSignal
+
+<span class="comment">% So these three numbers represent the relative responses of the cones in</span>
+<span class="comment">% your retina to a real surface illuminated by a real light source. Note</span>
+<span class="comment">% that the units are arbitrary because both the reflectance function and</span>
+<span class="comment">% the cone sensitivities were scaled between 0-1. We could redo these</span>
+<span class="comment">% calculations, keeping track of the actual intensity of the illuminant</span>
+<span class="comment">% such that the coneSignals could be expressed in terms of the number of</span>
+<span class="comment">% photopigment isomerizations but that's not worth the effort for our</span>
+<span class="comment">% purposes here.</span>
+</pre><pre class="codeoutput">
+coneSignals =
+
+  497.7669
+  429.1217
+   72.9683
+
+</pre><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% MONITOR PHOSPHORS</span>
+
+<span class="comment">% We know from the color matching experiment that we can match any test</span>
+<span class="comment">% light (including the above spectralSignal from the Macbeth surface) by an</span>
+<span class="comment">% appropriate combination of 3 primary lights. An example of the</span>
+<span class="comment">% application of this principle is in color TV, for which you can display</span>
+<span class="comment">% any of a large number of colors using the 3 lights in the display. For a</span>
+<span class="comment">% CRT (if you can still buy one) the 3 primaries are generated by an</span>
+<span class="comment">% electron beam exciting 3 types of phosphors (a phosphor is a substance</span>
+<span class="comment">% that exhibits phosphorescence or sustained glowing after exposure to</span>
+<span class="comment">% electrons).</span>
+
+<span class="comment">% Read in the spectra of a typical set of color monitor phosphors. Each row</span>
+<span class="comment">% in this matrix corresponds to one phosphor, giving its relative output</span>
+<span class="comment">% energy as a function of wavelength. These are probably similar to the 3</span>
+<span class="comment">% primaries on your screen, but not quite right because you are probably</span>
+<span class="comment">% using a flat panel display. We could measure the spectra for the 3</span>
+<span class="comment">% primaries on your screen, a procedure called color calibration.</span>
+
+load <span class="string">phosphors</span> <span class="comment">%phosphors</span>
+
+<span class="comment">% Look at the three phosphor spectra together</span>
+
+figure(1);clf
+plot(spectrum,phosphors(1,:),<span class="string">'r'</span>);
+hold <span class="string">on</span>
+plot(spectrum,phosphors(2,:),<span class="string">'g'</span>);
+plot(spectrum,phosphors(3,:),<span class="string">'b'</span>);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Relative Energy'</span>);
+title(<span class="string">'Spectral power distributions of typical monitor phosphors'</span>);
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_06.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% COLOR MATCHING</span>
+
+<span class="comment">% Here we calculate the monitor phosophor intensities required to</span>
+<span class="comment">% generate the *same* receptor responses in your eye that the Macbeth</span>
+<span class="comment">% surface generates under daylight. To do so, we first find the</span>
+<span class="comment">% linear tranform that gives the cone responses due to the different</span>
+<span class="comment">% monitor spectra. To understand this calculation, try pulling out a</span>
+<span class="comment">% piece of paper and convincing yourself that this is the way to get</span>
+<span class="comment">% cone responses from the phosphor intensities. The variable cones is a</span>
+<span class="comment">% 3x31 matrix and phosphors' (transpose of phosphors) is a 31x3 matrix. The</span>
+<span class="comment">% product is a 3x3 matrix that takes 3 numbers corresponding to the</span>
+<span class="comment">% intensities of each of the 3 monitor primaries and converts it into 3</span>
+<span class="comment">% numbers corresponding to the 3 cone responses.</span>
+
+monitor_to_cones = cones * phosphors'
+
+<span class="comment">% Now, the inverse of this matrix tells us how to set the phosphors to</span>
+<span class="comment">% achieve any desired cone response:</span>
+
+cones_to_monitor = inv(monitor_to_cones)
+
+<span class="comment">% We apply this transformation to the desired cone responses and</span>
+<span class="comment">% obtain the necessary monitor intensities for rendering a color</span>
+<span class="comment">% on the monitor that matches the Macbeth surface reflectance under</span>
+<span class="comment">% daylight.</span>
+
+monitorSignals = cones_to_monitor * coneSignals
+</pre><pre class="codeoutput">
+monitor_to_cones =
+
+    0.0908    0.1556    0.0174
+    0.0378    0.1623    0.0256
+    0.0051    0.0162    0.1379
+
+
+cones_to_monitor =
+
+   18.3038  -17.6384    0.9637
+   -4.2301   10.3529   -1.3891
+   -0.1753   -0.5663    7.3776
+
+
+monitorSignals =
+
+   1.0e+03 *
+
+    1.6123
+    2.2357
+    0.2081
+
+</pre><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% RENDERING</span>
+
+<span class="comment">% We have a function, 'renderSurfaces' to do the above work for us and</span>
+<span class="comment">% display an image of all of the Macbeth surfaces under a particular</span>
+<span class="comment">% illuminant. This function starts with</span>
+<span class="comment">% spectral representations of a set of surfaces, a light, the human cones,</span>
+<span class="comment">% and the monitor phosphors. It produces a color image that is</span>
+<span class="comment">% displayed as a true-color picture. If we were using the calibrated SPDs</span>
+<span class="comment">% of the primaries in your screen then the rendered image would be an exact match.</span>
+
+scaleFactor = 155;
+renderSurfaces(macbeth,daylight_65,cones,phosphors,scaleFactor,<span class="keyword">...</span>
+	<span class="string">'macbeth surfaces under daylight 65'</span>)
+
+<span class="comment">% You may get a warning such as:</span>
+<span class="comment">%       Warning, image(s) 13 out of range</span>
+<span class="comment">% meaning that there are some colors that are not properly represented.</span>
+<span class="comment">% The color-image is made up of float rgb values that are rescaled to 8bit</span>
+<span class="comment">% values In this particular case, there is one color with rgb values that</span>
+<span class="comment">% are negative.  This means that this color can not be rendered on this</span>
+<span class="comment">% monitor.  It is out of the monitor's gamut.  The blue-ish square near the</span>
+<span class="comment">% lower left corner, for example, is the color that is out of range.</span>
+
+<span class="comment">% Also, we used an arbitrary scale factor to display these colors. Change</span>
+<span class="comment">% the scaleFactor to 255 and re-evaluate to display the same surfaces under</span>
+<span class="comment">% "dim" daylight conditions.</span>
+
+<span class="comment">% If it weren't for this gamut problem (arbitrary scale factor and clipping</span>
+<span class="comment">% negative values), and if the phosphor spectra accurately reflected your</span>
+<span class="comment">% screen, the Macbeth chart you see would look like it would look under</span>
+<span class="comment">% normal daylight.</span>
+
+<span class="comment">% Try rendering the Macbeth Color Checker under the xenon_flash</span>
+<span class="comment">% and cie_a illuminants. Does it look the same or different? Why?</span>
+</pre><pre class="codeoutput">Warning, image(s)  13 out of range.
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_07.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% MONITOR SPECTRUM WITH ALL 3 PRIMARIES AT 1/2 MAX</span>
+
+<span class="comment">% In color vision experiments, it is frequently useful to control the</span>
+<span class="comment">% stimuli in terms of the cone responses that they evoke. As an example of</span>
+<span class="comment">% this and as another example of how to apply the principles of color</span>
+<span class="comment">% matching and trichromacy, we will calculte how to change the monitor</span>
+<span class="comment">% display intensities so as to affect only the S-cones.</span>
+
+<span class="comment">% Start with a light which is one-half the maximum intensity for all three</span>
+<span class="comment">% monitor primaries (each set to 128 assuming that each primary can be set</span>
+<span class="comment">% to range from 0 to 255).</span>
+
+spectralSignalMean = phosphors' * [128 128 128]';
+figure(1);clf
+plot(spectrum,spectralSignalMean);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Relative Energy'</span>);
+title(<span class="string">'Spectral power distribution of mean display'</span>);
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_08.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">% S-CONE ISOLATING STIMULUS</span>
+
+<span class="comment">% First we compute the cone responses to the monitor spectrum above:</span>
+
+coneSignalsMean = cones * spectralSignalMean
+
+<span class="comment">% Next we add a small amount to the S-cone response:</span>
+
+coneSignalsDeltaS = coneSignalsMean + [0 0 10]'
+
+<span class="comment">% Next we convert back from cone responses to monitor intensities:</span>
+
+monitorSignalsDeltaS = cones_to_monitor * coneSignalsDeltaS
+
+<span class="comment">% Note that all 3 of the monitor intensities are now different from 128</span>
+<span class="comment">% (the value we started with). The 3rd one was increased a lot which makes</span>
+<span class="comment">% sense because this is the monitor phosphor that has most of its energy at</span>
+<span class="comment">% short wavelengths, and we wanted to increase the responses of the S cones</span>
+<span class="comment">% which are most sensitive to short wavelengths. The other two primaries</span>
+<span class="comment">% were decreased in intensity so as to maintain the L and M cone responses</span>
+<span class="comment">% as they were. The intensity of each primary has a differential affect on</span>
+<span class="comment">% each cone class (e.g., the 3rd primary having the greatest effect on the</span>
+<span class="comment">% S cones). But because of the broad spectrum of each of the monitor</span>
+<span class="comment">% primaries and because of the cone spectral sensitivities are also broad,</span>
+<span class="comment">% changing the intensity of any one primary will affect the responses of</span>
+<span class="comment">% all 3 cones to some extent. Turning down the intensities of the first two</span>
+<span class="comment">% primaries compensate (just right) for this.</span>
+
+<span class="comment">% Superimpose the two spectral signals corresponding to the mean and S cone</span>
+<span class="comment">% increment, and note the increase at short wavelenghts along with the</span>
+<span class="comment">% slight decrease at middle wavelengths.</span>
+
+spectralSignalDeltaS = phosphors' * monitorSignalsDeltaS;
+figure(1);clf
+plot(spectrum,[spectralSignalMean spectralSignalDeltaS]);
+xlabel(<span class="string">'Wavelength (nm)'</span>);
+ylabel(<span class="string">'Relative Energy'</span>);
+title(<span class="string">'Spectral power distribution of S cone increment'</span>);
+
+<span class="comment">% Recompute this for a decrease, rather than an increase, in the S cone</span>
+<span class="comment">% responses. What happens if you try to make a much larger decrease (or</span>
+<span class="comment">% increase) in the S cone responses (-100 or 100 instead of -10 or 10)?</span>
+</pre><pre class="codeoutput">
+coneSignalsMean =
+
+   33.7620
+   28.8917
+   20.3697
+
+
+coneSignalsDeltaS =
+
+   33.7620
+   28.8917
+   30.3697
+
+
+monitorSignalsDeltaS =
+
+  137.6374
+  114.1088
+  201.7764
+
+</pre><img vspace="5" hspace="5" src="colorMatchingTutorial_09.png"> <p class="footer"><br>
+            Published with MATLAB&reg; 7.1<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+
+% In this tutorial, we will introduce some basic spectral calculations that
+% we can use to understand color vision, surface reflectances, illuminants,
+% photoreceptor encoding, and trichromacy.
+
+% You will notice that much of the work below involves matrix algebra.  I
+% suggest that you pull out a pad of paper and draw matrix tableaus as we
+% proceed to help you follow the calculations.
+
+% Running the tutorial:
+% - Run matlab
+% - Change directory to the folder containing the tutorial using 'cd ' at
+% the matlab prompt.
+% - Type 'edit colorMatchingTutorial' at the matlab prompt to open this
+% file.
+% - Click on Cell in the menubar and select Enable Cell Mode.
+% - The tutorial is subdivided into sections called cells. Each cell
+% contains some comments and explanations along with some code. Click the
+% mouse in the first cell (sampling the visible spectrum) and use Evaluate
+% Current Cell from the Cell menu to evaluate the code segment in that
+% cell. Or use the keyboard shortcut (command-enter or apple-return on the
+% Mac). Continue reading the comments for each successive cell and then
+% evaluating it.
+% - Click on File in the menubar and select Save and then select Publish To
+% HTML to produce a version of this file with the results inserted at each
+% step, that you can view with a web browser. By default, the output is
+% saved in a subfolder called html.
+% - For more information about cell mode, choose Matlab Help from the Help
+% menu and search for "Rapid Code Iteration Using Cells"
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SAMPLING THE VISIBLE SPECTRUM
+
+% Throughout, we will be sampling wavelenghts in 10nm steps from 400 to 700
+% so define the spectrum as follows:
+
+spectrum = linspace(400,700,31);
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SURFACE REFLECTANCE
+
+% This loads in the macbeth color checker and the munsell
+% standard surfaces
+
+load surfaces  % macbeth, munsell
+size(macbeth)
+size(munsell)
+
+% The Macbeth Color Checker is a set of 24 surfaces commonly used to
+% evaluate color balancing systems.  The materials in the Color Checker
+% were selected to have the same surface reflectance functions as various
+% important surfaces that are commonly used in television and film images.
+% We will read in a matrix of data.  Each row of the matrix is the
+% reflectance function of one of the Macbeth surfaces, measured at each of
+% 31 samples in the visible spectrum.  (Most of the visible spectrum is in
+% the 400-700 nanometers wavelength region.)  Thus the variable 'macbeth'
+% is a 24x31 matrix of surface spectra. Each row is the reflectance
+% function for one surface. Likewise, the 'munsell' variable is a 359x31
+% matrix in which each row is the reflectance function of a surface.
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LOOK AT THE SURFACE REFLECTANCE SPECTRA
+
+% The 8th row of the macbeth is a surface that typically looks greenish. We
+% plot the fractional reflectance (as a function of wavelength) for this
+% surface.
+
+figure(1);clf
+plot(spectrum,macbeth(8,:),'g');
+xlabel('Wavelength (nm)');
+ylabel('Surface Reflectance');
+title('Reflectance of Macbeth Surfaces');
+
+% For example, about 28% of the light at wavelength 500 nm is
+% reflected by the "Green" surface.
+
+green_500 = macbeth(8,find(spectrum==500))
+
+% Here is the fractional reflectance of red surface:
+
+hold on
+plot(spectrum,macbeth(9,:),'r');
+
+% And here it is for a gray surface:
+
+plot(spectrum,macbeth(20,:),'b');
+hold off
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TYPICAL DAYLIGHT SPECTRUM
+
+% Now, load in the illuminants.  Each illuminant vector represents the
+% amount of light present at each wavelength. Again, the light is sampled
+% at 31 points in the visible spectrum, so we get vector of 31 numbers
+% representing the spectral power distribution (SPD) for that light.
+
+load illuminants %cie_a,daylight_65,floursecent,illuminant_C,xenon_flash
+
+% Make a plot of daylight_65. Daylight_65 is the standard illuminant which
+% represents a mix of blue sky and clouds. Note: the energy units are
+% arbitrary.
+
+figure(1);clf
+plot(spectrum,daylight_65,'k');
+xlabel('Wavelength (nm)');
+ylabel('Energy');
+title('Energy spectrum of daylight 65 Illimunant');
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MORE ILLUMINANTS
+
+% Here are the spectral power distributions of some other illuminants.
+% Several of these are used as international standards for illuminants, as
+% specified by the CIE (an international standards committee for color
+% printing and technology).
+
+figure(1);clf
+plot(spectrum,[cie_a',daylight_65',flourescent',illuminant_C',xenon_flash']);
+xlabel('Wavelength (nm)');
+ylabel('Energy');
+title('Energy Spectrum of Illuminants');
+legend('cie a','daylight 65','flourescent','illuminant C','xenon flash');
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CALCULATE THE SPECTRAL SIGNAL RESULTING FROM A LIGHT REFLECTING OFF A
+% MACBETH SURFACE
+
+% The spectral signal reaching the eye is the pointwise product of the
+% incident light and the reflectance of the surface at the each wavelength.
+% This can be computed using .* in matlab. Or it can be expressed as a
+% matrix product, where the surface reflectance is multiplied by a big
+% diagonal matrix with the light intensities at each wavelength along the
+% diagonal. As an example, plot the spectral signal coming off the green
+% Macbeth surface for daylight illumination. 
+
+spectralSignal = macbeth(8,:)' .* daylight_65';
+
+figure(1);clf
+plot(spectrum,spectralSignal,'g');
+xlabel('Wavelength (nm)');
+ylabel('Reflected Energy');
+title('Reflected energy of surfaces under daylight_65')
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HUMAN CONE SPECTRAL SENSITIVITIES
+
+% Now we want to measure the photoresponses of the human cones to these
+% stimuli.  The human cone spectral sensitivities have been measured and
+% correspond closely with behavioral color matching data known for many
+% years. We now read in a matrix of the human cone sensitivities. There are
+% three classes of cone, the so-called L,M, and S cones with (L)ong-,
+% (M)iddle-, and (S)hort-wavelength peak sensitivities. We represent each
+% cone by its sensitivity at each of 31 sample wavelengths in the spectrum.
+% Thus, we have a 3x31 matrix representing the human cone spectral
+% sensitivities.
+
+load cones  %cones
+
+% Look at the three cone classes superimposed.  Notice how close
+% the L and M cones are in terms of their peak sensitivities.
+
+figure(1)
+clf
+plot(spectrum,cones(1,:),'r');
+hold on
+plot(spectrum,cones(2,:),'g');
+plot(spectrum,cones(3,:),'b');
+xlabel('Wavelength (nm)');
+ylabel('Relative Sensitivity');
+title('Cone Spectral Sensitivity Functions');
+ylim([0 1]);
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HUMAN CONE RESPONSES TO THE SPECTRAL SIGNAL
+
+% We can describe the photoreceptor responses as a matrix multiplication. The
+% matrix product of the receptor sensitivites and the  spectral
+% signal gives the photoisomerizations in each receptor class due to each
+% of the surfaces. The cone spectral sensitivity is a 3x31 matrix and the
+% spectralSignal is a 31x1 vector so the product is a vector of 3 numbers,
+% one for each of the cones (L, M, S).
+
+coneSignals = cones * spectralSignal
+
+% So these three numbers represent the relative responses of the cones in
+% your retina to a real surface illuminated by a real light source. Note
+% that the units are arbitrary because both the reflectance function and
+% the cone sensitivities were scaled between 0-1. We could redo these
+% calculations, keeping track of the actual intensity of the illuminant
+% such that the coneSignals could be expressed in terms of the number of
+% photopigment isomerizations but that's not worth the effort for our
+% purposes here.
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MONITOR PHOSPHORS
+
+% We know from the color matching experiment that we can match any test
+% light (including the above spectralSignal from the Macbeth surface) by an
+% appropriate combination of 3 primary lights. An example of the
+% application of this principle is in color TV, for which you can display
+% any of a large number of colors using the 3 lights in the display. For a
+% CRT (if you can still buy one) the 3 primaries are generated by an
+% electron beam exciting 3 types of phosphors (a phosphor is a substance
+% that exhibits phosphorescence or sustained glowing after exposure to
+% electrons).
+
+% Read in the spectra of a typical set of color monitor phosphors. Each row
+% in this matrix corresponds to one phosphor, giving its relative output
+% energy as a function of wavelength. These are probably similar to the 3
+% primaries on your screen, but not quite right because you are probably
+% using a flat panel display. We could measure the spectra for the 3
+% primaries on your screen, a procedure called color calibration.
+
+load phosphors %phosphors
+
+% Look at the three phosphor spectra together
+
+figure(1);clf
+plot(spectrum,phosphors(1,:),'r');
+hold on
+plot(spectrum,phosphors(2,:),'g');
+plot(spectrum,phosphors(3,:),'b');
+xlabel('Wavelength (nm)');
+ylabel('Relative Energy');
+title('Spectral power distributions of typical monitor phosphors');
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COLOR MATCHING
+
+% Here we calculate the monitor phosophor intensities required to
+% generate the *same* receptor responses in your eye that the Macbeth
+% surface generates under daylight. To do so, we first find the
+% linear tranform that gives the cone responses due to the different
+% monitor spectra. To understand this calculation, try pulling out a 
+% piece of paper and convincing yourself that this is the way to get
+% cone responses from the phosphor intensities. The variable cones is a
+% 3x31 matrix and phosphors' (transpose of phosphors) is a 31x3 matrix. The
+% product is a 3x3 matrix that takes 3 numbers corresponding to the
+% intensities of each of the 3 monitor primaries and converts it into 3
+% numbers corresponding to the 3 cone responses.
+
+monitor_to_cones = cones * phosphors'
+
+% Now, the inverse of this matrix tells us how to set the phosphors to
+% achieve any desired cone response:
+
+cones_to_monitor = inv(monitor_to_cones)
+
+% We apply this transformation to the desired cone responses and
+% obtain the necessary monitor intensities for rendering a color
+% on the monitor that matches the Macbeth surface reflectance under
+% daylight.
+
+monitorSignals = cones_to_monitor * coneSignals
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% RENDERING
+
+% We have a function, 'renderSurfaces' to do the above work for us and
+% display an image of all of the Macbeth surfaces under a particular
+% illuminant. This function starts with
+% spectral representations of a set of surfaces, a light, the human cones,
+% and the monitor phosphors. It produces a color image that is
+% displayed as a true-color picture. If we were using the calibrated SPDs
+% of the primaries in your screen then the rendered image would be an exact match.
+
+scaleFactor = 155;
+renderSurfaces(macbeth,daylight_65,cones,phosphors,scaleFactor,...
+	'macbeth surfaces under daylight 65')
+
+% You may get a warning such as:
+%       Warning, image(s) 13 out of range
+% meaning that there are some colors that are not properly represented.
+% The color-image is made up of float rgb values that are rescaled to 8bit
+% values In this particular case, there is one color with rgb values that
+% are negative.  This means that this color can not be rendered on this
+% monitor.  It is out of the monitor's gamut.  The blue-ish square near the
+% lower left corner, for example, is the color that is out of range.
+
+% Also, we used an arbitrary scale factor to display these colors. Change
+% the scaleFactor to 255 and re-evaluate to display the same surfaces under
+% "dim" daylight conditions.
+
+% If it weren't for this gamut problem (arbitrary scale factor and clipping
+% negative values), and if the phosphor spectra accurately reflected your
+% screen, the Macbeth chart you see would look like it would look under
+% normal daylight.
+
+% Try rendering the Macbeth Color Checker under the xenon_flash
+% and cie_a illuminants. Does it look the same or different? Why?
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MONITOR SPECTRUM WITH ALL 3 PRIMARIES AT 1/2 MAX
+
+% In color vision experiments, it is frequently useful to control the
+% stimuli in terms of the cone responses that they evoke. As an example of
+% this and as another example of how to apply the principles of color
+% matching and trichromacy, we will calculte how to change the monitor
+% display intensities so as to affect only the S-cones.
+
+% Start with a light which is one-half the maximum intensity for all three
+% monitor primaries (each set to 128 assuming that each primary can be set
+% to range from 0 to 255).
+
+spectralSignalMean = phosphors' * [128 128 128]';
+figure(1);clf
+plot(spectrum,spectralSignalMean);
+xlabel('Wavelength (nm)');
+ylabel('Relative Energy');
+title('Spectral power distribution of mean display');
+
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% S-CONE ISOLATING STIMULUS
+
+% First we compute the cone responses to the monitor spectrum above:
+
+coneSignalsMean = cones * spectralSignalMean
+ 
+% Next we add a small amount to the S-cone response:
+
+coneSignalsDeltaS = coneSignalsMean + [0 0 10]'
+
+% Next we convert back from cone responses to monitor intensities:
+
+monitorSignalsDeltaS = cones_to_monitor * coneSignalsDeltaS
+
+% Note that all 3 of the monitor intensities are now different from 128
+% (the value we started with). The 3rd one was increased a lot which makes
+% sense because this is the monitor phosphor that has most of its energy at
+% short wavelengths, and we wanted to increase the responses of the S cones
+% which are most sensitive to short wavelengths. The other two primaries
+% were decreased in intensity so as to maintain the L and M cone responses
+% as they were. The intensity of each primary has a differential affect on
+% each cone class (e.g., the 3rd primary having the greatest effect on the
+% S cones). But because of the broad spectrum of each of the monitor
+% primaries and because of the cone spectral sensitivities are also broad,
+% changing the intensity of any one primary will affect the responses of
+% all 3 cones to some extent. Turning down the intensities of the first two
+% primaries compensate (just right) for this.
+
+% Superimpose the two spectral signals corresponding to the mean and S cone
+% increment, and note the increase at short wavelenghts along with the
+% slight decrease at middle wavelengths.
+
+spectralSignalDeltaS = phosphors' * monitorSignalsDeltaS;
+figure(1);clf
+plot(spectrum,[spectralSignalMean spectralSignalDeltaS]);
+xlabel('Wavelength (nm)');
+ylabel('Relative Energy');
+title('Spectral power distribution of S cone increment');
+
+% Recompute this for a decrease, rather than an increase, in the S cone
+% responses. What happens if you try to make a much larger decrease (or
+% increase) in the S cone responses (-100 or 100 instead of -10 or 10)?
+
+
+
+
+
+
+
+##### SOURCE END #####
+-->
+   </body>
+</html>
