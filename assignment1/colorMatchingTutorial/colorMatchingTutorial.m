@@ -1,4 +1,4 @@
-
+clear; clc; close all;
 % In this tutorial, we will introduce some basic spectral calculations that
 % we can use to understand color vision, surface reflectances, illuminants,
 % photoreceptor encoding, and trichromacy.
