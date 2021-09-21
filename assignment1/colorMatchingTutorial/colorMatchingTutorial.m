@@ -331,7 +331,7 @@ coneSignalsMean = cones * spectralSignalMean
  
 % Next we add a small amount to the S-cone response:
 
-coneSignalsDeltaS = coneSignalsMean + [0 0 10]'
+coneSignalsDeltaS = coneSignalsMean + [0 0 -10]'
 
 % Next we convert back from cone responses to monitor intensities:
 
