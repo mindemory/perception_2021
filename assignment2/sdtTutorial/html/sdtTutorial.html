@@ -1,0 +1,545 @@
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>sdtTutorial</title>
+      <meta name="generator" content="MATLAB 7.1">
+      <meta name="date" content="2007-10-02">
+      <meta name="m-file" content="sdtTutorial"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows.  On Gecko-based browsers, the shrink-to-fit doesn't work. */ 
+p,h1,h2,div.content div {
+  /* for MATLAB's browser */
+  width: 600px;
+  /* for Mozilla, but the "width" tag overrides it anyway */
+  max-width: 600px;
+  /* for IE */
+  width:expression(document.body.clientWidth > 620 ? "600px": "auto" );
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content"><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%%% Simple Forced Choice</span>
+
+<span class="comment">% Imagine that you are doing a psychophysical detection experiment in which</span>
+<span class="comment">% a subject is asked to detect the presence of a brief, very dim flash of</span>
+<span class="comment">% light in a dark room.  You use a simple forced-choice method in which the</span>
+<span class="comment">% light is flashed on half of the trials (randomly interleaved).  On each</span>
+<span class="comment">% trial, the subject must respond "yes" or "no".  We assume that the</span>
+<span class="comment">% subjects' performance is determined by the number of photopigment</span>
+<span class="comment">% isomerizations on each trial.</span>
+
+<span class="comment">% When no light is flashed, there is still a certain probability that some</span>
+<span class="comment">% number of photoreceptors will respond, due to thermal isomerizations of</span>
+<span class="comment">% photopigment molecules.  Let's assume that on average only 3 photopigment</span>
+<span class="comment">% molecules isomerize.</span>
+
+darkLight=3;
+
+<span class="comment">% On each trial for no light was flashed, the response is given</span>
+<span class="comment">% by a draw from a Poisson distribution with this darkLight value</span>
+<span class="comment">% as its mean.  We can generate a bunch of samples from this</span>
+<span class="comment">% distribution by using the inverse cumulative of the Poisson</span>
+<span class="comment">% distribution</span>
+
+ntrials=1000;
+xrand=rand(ntrials,1);
+noiseAloneResponses=poissinv(xrand,darkLight);
+
+<span class="comment">% Plot a histogram of the noise-alone responses, superimposed</span>
+<span class="comment">% with the Poisson pdf:</span>
+response=[0:20];
+noiseAlonePDF=poisspdf(response,darkLight);
+plot(response,noiseAlonePDF)
+axis([min(response) max(response) 0 0.25])
+xlabel(<span class="string">'Response'</span>)
+ylabel(<span class="string">'Probability'</span>)
+noiseAloneHist=hist(noiseAloneResponses,response);
+hold <span class="string">on</span>
+bar(response,noiseAloneHist/ntrials)
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_01.png"> <p>Next, let's use a stimulus intensity that causes 7 photopigment molecules will isomerize on average for a given trial.  The
+            total number of isomerizations on a given trial includes those caused by photon absoptions plus those that spontaneously isomerize.
+         </p><pre class="codeinput">stimulusStrength=5;
+
+xrand=rand(1,ntrials);
+signalPlusNoiseResponses=poissinv(xrand,darkLight+stimulusStrength);
+
+<span class="comment">% Plot a histogram of the signal-and-noise responses, superimposed with the</span>
+<span class="comment">% Poisson pdf:</span>
+signalPlusNoisePDF=poisspdf(response,darkLight+stimulusStrength);
+plot(response,signalPlusNoisePDF)
+axis([min(response) max(response) 0 0.25])
+xlabel(<span class="string">'Response'</span>)
+ylabel(<span class="string">'Probability'</span>)
+signalPlusNoiseHist=hist(signalPlusNoiseResponses,response)
+hold <span class="string">on</span>
+bar(response,signalPlusNoiseHist/ntrials)
+hold <span class="string">off</span>
+</pre><pre class="codeoutput">
+signalPlusNoiseHist =
+
+  Columns 1 through 19 
+
+     1     6    17    30    53    75   116   133   147   117   101    83    48    36    15    14     5     1     1
+
+  Columns 20 through 21 
+
+     1     0
+
+</pre><img vspace="5" hspace="5" src="sdtTutorial_02.png"> <p>Plot the two Poisson pdf's (noiseAlone and signalPlusNoise) at the same time:</p><pre class="codeinput">plot(response,[noiseAlonePDF' signalPlusNoisePDF'])
+legend(<span class="string">'noise'</span>,<span class="string">'signal'</span>);
+hold <span class="string">on</span>;
+xlabel(<span class="string">'Response'</span>)
+ylabel(<span class="string">'Probability'</span>)
+</pre><img vspace="5" hspace="5" src="sdtTutorial_03.png"> <p>Let's say the subject uses a criterion of 4 isomerizations. That is, whenever there are 4 or more isomerizations, they respond
+            "yes the signal was present".  When there are fewer than 4, then they say "no the signal was not present".
+         </p><pre class="codeinput">criterion=4;
+line=[4 0;4 0.25];
+plot(line(:,1),line(:,2),<span class="string">'r'</span>)
+
+<span class="comment">% Everything to the right of the line corresponds to the "yes" response and</span>
+<span class="comment">% everything to the left corresponds to a "no".</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_04.png"> <p>There are four possible outcomes on a given trial: hit, miss, false alarm, and correct rejection.  We can calculate the percentage
+            of trials that yield each of these outcomes from the simulated responses:
+         </p><pre class="codeinput">missRate=sum(signalPlusNoiseResponses&lt;criterion)/ntrials
+hitRate=sum(signalPlusNoiseResponses&gt;=criterion)/ntrials
+correctRejectRate=sum(noiseAloneResponses&lt;criterion)/ntrials
+falseAlarmRate=sum(noiseAloneResponses&gt;=criterion)/ntrials
+
+<span class="comment">% Notice that the first two (correctDetect and miss) rates must sum to 1</span>
+<span class="comment">% and the second two (falseAlarm correctReject) must sum to 1.</span>
+</pre><pre class="codeoutput">
+missRate =
+
+    0.0540
+
+
+hitRate =
+
+    0.9460
+
+
+correctRejectRate =
+
+    0.6380
+
+
+falseAlarmRate =
+
+    0.3620
+
+</pre><p>We can also compute what these values should be based on the theoretical Poisson distribution.</p><pre class="codeinput">missProbability=sum(signalPlusNoisePDF([1:criterion]))
+hitProbability=1-missProbability
+correctRejectProbability=sum(noiseAlonePDF([1:criterion]))
+falseAlarmProbability=1-correctRejectProbability
+</pre><pre class="codeoutput">
+missProbability =
+
+    0.0424
+
+
+hitProbability =
+
+    0.9576
+
+
+correctRejectProbability =
+
+    0.6472
+
+
+falseAlarmProbability =
+
+    0.3528
+
+</pre><p>The hit rates and the false alarm rates all depend on the subject's criterion.  We can plot an entire ROC curve by redoing
+            the calculations for a bunch of criteria:
+         </p><pre class="codeinput">hitP=zeros(size(response));
+missP=zeros(size(response));
+correctRejectP=zeros(size(response));
+falseAlarmP=zeros(size(response));
+<span class="comment">% c is the criterion, loops through taking on values of response=[0:20].</span>
+<span class="comment">% i=c+1 is the iteration index, since Matlab indexing starts counting from</span>
+<span class="comment">% 1 instead of 0.</span>
+<span class="keyword">for</span> c=response
+  i=c+1;
+  missP(i)=sum(signalPlusNoisePDF([1:c]));
+  hitP(i)=1-missP(i);
+  correctRejectP(i)=sum(noiseAlonePDF([1:c]));
+  falseAlarmP(i)=1-correctRejectP(i);
+<span class="keyword">end</span>
+
+clf;
+plot(falseAlarmP,hitP)
+xlabel(<span class="string">'False Alarm Rate'</span>)
+ylabel(<span class="string">'Hit Rate'</span>)
+</pre><img vspace="5" hspace="5" src="sdtTutorial_05.png"> <p>Now we can repeat the whole thing for several different stimulus strengths to produce a family of ROC curves.</p><pre class="codeinput">stimulusStrengths=[0:10];
+hitP=zeros([length(response),length(stimulusStrengths)]);
+missP=zeros([length(response),length(stimulusStrengths)]);
+correctRejectP=zeros([length(response),length(stimulusStrengths)]);
+falseAlarmP=zeros([length(response),length(stimulusStrengths)]);
+<span class="keyword">for</span> s=stimulusStrengths
+  j=s+1;
+  signalPlusNoisePDF=poisspdf(response,darkLight+s);
+  <span class="keyword">for</span> c=response
+    i=c+1;
+    missP(i,j)=sum(signalPlusNoisePDF([1:c]));
+    hitP(i,j)=1-missP(i,j);
+    correctRejectP(i,j)=sum(noiseAlonePDF([1:c]));
+    falseAlarmP(i,j)=1-correctRejectP(i,j);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+plot(falseAlarmP,hitP)
+xlabel(<span class="string">'False Alarm Rate'</span>)
+ylabel(<span class="string">'Hit Rate'</span>)
+
+<span class="comment">% As the stimulus strength is increased, there is less and less overlap</span>
+<span class="comment">% between the two (noiseAlonePDF, signalPlusNoisePDF) response</span>
+<span class="comment">% distributions, and ROC curve becomes more and more bowed away from the</span>
+<span class="comment">% diagonal.  For very weak stimuli there is no way to get a high hit rate</span>
+<span class="comment">% without also getting lots of false alarms.  In the limit, for a very</span>
+<span class="comment">% strong stimulus, you can get a perfect hit rate with no false alarms.</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_06.png"> <p>Next, repeat all of this for the equal-variance Gaussian case</p><pre class="codeinput">criteria = -3:.1:10;
+stimulusStrengths=[0:5];
+hitP=zeros([length(criteria),length(stimulusStrengths)]);
+falseAlarmP=zeros([length(criteria),length(stimulusStrengths)]);
+<span class="keyword">for</span> s=stimulusStrengths
+  j=s+1;
+  <span class="keyword">for</span> c=1:length(criteria)
+    crit = criteria(c);
+    hitP(c,j)=1-normcdf(crit,s,1);
+    falseAlarmP(c,j)=1-normcdf(crit,0,1);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+plot(falseAlarmP,hitP)
+xlabel(<span class="string">'False Alarm Rate'</span>)
+ylabel(<span class="string">'Hit Rate'</span>)
+axis <span class="string">square</span>
+
+figure(2)
+plot(norminv(falseAlarmP),norminv(hitP))
+xlabel(<span class="string">'z(False Alarm Rate)'</span>)
+ylabel(<span class="string">'z(Hit Rate)'</span>)
+axis <span class="string">square</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_07.png"> <img vspace="5" hspace="5" src="sdtTutorial_08.png"> <p>Next, repeat all of this for the UNequal-variance Gaussian case</p><pre class="codeinput">criteria = -3:.1:10;
+stimulusStrengths=[0:5];
+hitP=zeros([length(criteria),length(stimulusStrengths)]);
+falseAlarmP=zeros([length(criteria),length(stimulusStrengths)]);
+<span class="keyword">for</span> s=stimulusStrengths
+  j=s+1;
+  <span class="keyword">for</span> c=1:length(criteria)
+    crit = criteria(c);
+    hitP(c,j)=1-normcdf(crit,s,2);
+    falseAlarmP(c,j)=1-normcdf(crit,0,1);
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+close <span class="string">all</span>
+plot(falseAlarmP,hitP)
+xlabel(<span class="string">'False Alarm Rate'</span>)
+ylabel(<span class="string">'Hit Rate'</span>)
+axis <span class="string">square</span>
+
+figure(2)
+plot(norminv(falseAlarmP),norminv(hitP))
+xlabel(<span class="string">'z(False Alarm Rate)'</span>)
+ylabel(<span class="string">'z(Hit Rate)'</span>)
+axis <span class="string">square</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_09.png"> <img vspace="5" hspace="5" src="sdtTutorial_10.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%%% Two Alternative Forced Choice</span>
+
+<span class="comment">% We'll use the Newsome et al. direction discrimination experiments for an</span>
+<span class="comment">% example.  They recorded neural activity of MT neurons in response to</span>
+<span class="comment">% stimuli consisting of a field of coherently moving dots superimposed on a</span>
+<span class="comment">% field of randomly moving dots.  The strength of the motion signal was</span>
+<span class="comment">% controlled by varying the ratio of coherent to random dots.  The coherent</span>
+<span class="comment">% dots moved either in the cell's preferred direction or in the opposite</span>
+<span class="comment">% (null) direction.  The monkeys were trained to report the direction of</span>
+<span class="comment">% motion by making an eye movement at the end of each trial.</span>
+<span class="comment">%</span>
+<span class="comment">% Although Newsome et al. did not do it exactly this way, it will simplify</span>
+<span class="comment">% matters if we have two intervals in each trial.  A stimulus moves to the</span>
+<span class="comment">% right on one interval (chosen randomly), and it moves to the left on the</span>
+<span class="comment">% other interval.  On each trial, the monkey must choose the interval</span>
+<span class="comment">% during which the motion was rightward.  Because the stimulus is optimized</span>
+<span class="comment">% for the recorded neuron (covers the receptive field, moves in the</span>
+<span class="comment">% preferred direction, etc.), one might hypothesize that the monkey</span>
+<span class="comment">% monitors the response of that one neuron to make his decision, and</span>
+<span class="comment">% chooses the interval that evokes the greater response.  The task is very</span>
+<span class="comment">% difficult for low coherence levels (e.g., below 5%), and very easy for</span>
+<span class="comment">% high coherence leves (e.g., above 20%).</span>
+</pre><p>First, we adopt a simple model for how the neuron's response varies with stimulus strength (percent coherence) for stimuli
+            moving in the preferred and null directions.
+         </p><pre class="codeinput">stimulusStrengths=[0:25];   <span class="comment">% percent coherence</span>
+zeroResponse=20;			<span class="comment">% firing rate for 0 coherence</span>
+prefSlope=1;
+nullSlope=1/4;
+prefResponses = zeroResponse + prefSlope*stimulusStrengths;
+nullResponses = zeroResponse - nullSlope*stimulusStrengths;
+plot(stimulusStrengths,[prefResponses' nullResponses'])
+xlabel(<span class="string">'Stimulus strength (% coherence)'</span>)
+ylabel(<span class="string">'Response (spikes/sec)'</span>)
+
+<span class="comment">% For motion in the preferred direction, the simulated mean firing rate</span>
+<span class="comment">% rises linearly with coherence.  For motion in the null direction, the</span>
+<span class="comment">% mean firing rate declines linearly with coherence.</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_11.png"> <p>Next we adopt response probability density functions for to characterize the variability in the responses. We'll use normal
+            distributions with the response variance set equal to 1.5 times the mean response. For example, the response PDFs for 6 percent
+            coherence (in preferred and null directions) are:
+         </p><pre class="codeinput">response=[0:50];		<span class="comment">% range of possible responses</span>
+s=6;					<span class="comment">% 6 percent coherence</span>
+fanoFactor=1.5;
+nullMean = zeroResponse - nullSlope*s;
+nullSD = sqrt(fanoFactor*nullMean);
+nullPDF = normpdf(response,nullMean,nullSD);
+prefMean = zeroResponse + prefSlope*s;
+prefSD = sqrt(fanoFactor*prefMean);
+prefPDF = normpdf(response,prefMean,prefSD);
+plot(response,[nullPDF' prefPDF'])
+xlabel(<span class="string">'Response (spikes/sec)'</span>)
+ylabel(<span class="string">'Probability'</span>)
+legend(<span class="string">'null responses'</span>,<span class="string">'preferred responses'</span>)
+</pre><img vspace="5" hspace="5" src="sdtTutorial_12.png"> <p>Finally, we compute the psychometric function (probability correct versus conherence level) from the response probability
+            densities at different coherence levels. Probability correct is given by the integral of the product of the prefPDF times
+            the nullCDF (see sdtHandout for derivation).
+         </p><pre class="codeinput">response=[0:100];			<span class="comment">% range of possible responses</span>
+pCorrect=zeros(length(stimulusStrengths),1);
+<span class="keyword">for</span> s=stimulusStrengths
+  j=s+1;
+  nullMean = zeroResponse - nullSlope*s;
+  nullSD = sqrt(fanoFactor*nullMean);
+  nullCDF = normcdf(response,nullMean,nullSD);
+  prefMean = zeroResponse + prefSlope*s;
+  prefSD = sqrt(fanoFactor*prefMean);
+  prefPDF = normpdf(response,prefMean,prefSD);
+  pCorrect(j) = sum(prefPDF.*nullCDF);
+<span class="keyword">end</span>
+plot(stimulusStrengths,pCorrect)
+xlabel(<span class="string">'Stimulus strength (% coherence)'</span>)
+ylabel(<span class="string">'Proportion correct'</span>)
+set(gca,<span class="string">'yLim'</span>,[0.5 1.01]);
+set(gca,<span class="string">'Ytick'</span>,[0.5 0.6 0.7 0.8 0.9 1.0]);
+</pre><img vspace="5" hspace="5" src="sdtTutorial_13.png"> <p>We can also simulate the experiment by taking draws from the two response probability densities at each of the coherence levels,
+            to double check that the above calculation was correct.
+         </p><pre class="codeinput">numTrials=50;				<span class="comment">% #trials per coherence level</span>
+numCorrect=zeros(length(stimulusStrengths),1);
+<span class="keyword">for</span> s=stimulusStrengths
+  j=s+1;
+  nullMean = zeroResponse - nullSlope*s;
+  nullSD = sqrt(fanoFactor*nullMean);
+  prefMean = zeroResponse + prefSlope*s;
+  prefSD = sqrt(fanoFactor*prefMean);
+  <span class="keyword">for</span> i=1:numTrials
+    <span class="comment">% draw a null response from the nullPDF</span>
+    nullResponse = nullMean + nullSD*randn;
+    <span class="comment">% draw a pref response from the prefPDF</span>
+    prefResponse = prefMean + prefSD*randn;
+    <span class="keyword">if</span> (prefResponse &gt; nullResponse)
+      numCorrect(j) = numCorrect(j)+1;
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+percentCorrect=numCorrect/numTrials;
+
+<span class="comment">% Plot simulated percentCorrect with previously computed</span>
+<span class="comment">% probability correct.</span>
+hold <span class="string">on</span>
+plot(stimulusStrengths,percentCorrect,<span class="string">'ob'</span>)
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_14.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%%% Response Pooling</span>
+
+<span class="comment">% In the first (simple forced choice, detecting a dim light flash) example,</span>
+<span class="comment">% we assumed that the responses of all of the photoreceptors were pooled</span>
+<span class="comment">% (summed) to make a perceptual decision.</span>
+
+<span class="comment">% In the second (two-alternative forced choice, motion discrimination)</span>
+<span class="comment">% example, we assumed that the perceptual decision was based on the</span>
+<span class="comment">% responses of only one MT neuron. What if we were to pool the responses of</span>
+<span class="comment">% many such MT neurons? Let's start by pooling the responses of just 2</span>
+<span class="comment">% neurons, by assuming that the neurons' responses are statistically</span>
+<span class="comment">% independent, and by adopting a response pooling rule in which the</span>
+<span class="comment">% responses of the individual neurons are simply averaged.</span>
+
+<span class="comment">% Rerun the above simulation, averaging the responses of two neurons on</span>
+<span class="comment">% each interval of each trial:</span>
+
+numNeurons=2;
+numCorrect=zeros(length(stimulusStrengths),1);
+<span class="keyword">for</span> s=stimulusStrengths
+  j=s+1;
+  nullMean = zeroResponse - nullSlope*s;
+  nullSD = sqrt(fanoFactor*nullMean);
+  prefMean = zeroResponse + prefSlope*s;
+  prefSD = sqrt(fanoFactor*prefMean);
+  <span class="keyword">for</span> i=1:numTrials
+    <span class="comment">% draw null responses from the nullPDF, and average them</span>
+    nullResponse = mean(nullMean + nullSD*randn(numNeurons,1));
+    <span class="comment">% draw pref responses from the prefPDF, and average them</span>
+    prefResponse = mean(prefMean + prefSD*randn(numNeurons,1));
+    <span class="keyword">if</span> (prefResponse &gt; nullResponse)
+      numCorrect(j) = numCorrect(j)+1;
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+percentCorrect2=numCorrect/numTrials;
+
+<span class="comment">% Plot this new simulated psychometric data (in magenta) on top of the</span>
+<span class="comment">% previous simulation.</span>
+hold <span class="string">on</span>
+plot(stimulusStrengths,percentCorrect2,<span class="string">'om'</span>)
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_15.png"> <p>Most of the new magenta data points should lie above and to the left of the previously plotted blue data points. Not surprisingly,
+            pooling statistically independent responses improves performance.
+         </p><pre class="codeinput"><span class="comment">% In fact, we know exactly how much pooling helps.  The variance of the sum</span>
+<span class="comment">% of a bunch of independent random variables is the sum of the individual</span>
+<span class="comment">% variances. Hence, the standard deviation of the mean response decreases</span>
+<span class="comment">% as the square root of the number of neurons in the pool.</span>
+
+<span class="comment">% First plot the neurometric function again for a single neuron:</span>
+plot(stimulusStrengths,pCorrect)
+xlabel(<span class="string">'Stimulus strength (% coherence)'</span>)
+ylabel(<span class="string">'Proportion correct'</span>)
+set(gca,<span class="string">'yLim'</span>,[0.5 1.01]);
+set(gca,<span class="string">'Ytick'</span>,[0.5 0.6 0.7 0.8 0.9 1.0]);
+
+<span class="comment">% Compute and plot the neurometric functions for several different pool</span>
+<span class="comment">% sizes, using this sqrt-N factoid:</span>
+pCorrectN=zeros(length(stimulusStrengths),1);
+<span class="keyword">for</span> numNeurons=[2,10,100]
+  <span class="keyword">for</span> s=stimulusStrengths
+    j=s+1;
+    nullMean = zeroResponse - nullSlope*s;
+    nullSD = sqrt(fanoFactor*nullMean)/sqrt(numNeurons);
+    nullCDF = normcdf(response,nullMean,nullSD);
+    prefMean = zeroResponse + prefSlope*s;
+    prefSD = sqrt(fanoFactor*prefMean)/sqrt(numNeurons);;
+    prefPDF = normpdf(response,prefMean,prefSD);
+    pCorrectN(j) = sum(prefPDF.*nullCDF);
+  <span class="keyword">end</span>
+  hold <span class="string">on</span>
+  plot(stimulusStrengths,pCorrectN)
+  hold <span class="string">off</span>
+<span class="keyword">end</span>
+
+<span class="comment">% As the pool size increases, the neurometric function becomes very steep.</span>
+<span class="comment">% Large pool sizes predict unreasonably good performance.</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_16.png"> <pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%%% Covariance of Responses</span>
+
+<span class="comment">% But what if the neurons' responses are NOT statistically independent?  It</span>
+<span class="comment">% is typically the case that for nearby cortical neurons, the spike counts</span>
+<span class="comment">% from trial to trial are correlated with one another.</span>
+
+<span class="comment">% It turns out that there is again a relatively simple formula that allows</span>
+<span class="comment">% us to compute the variance of the pooled responses. The improvement with</span>
+<span class="comment">% pool size is no longer simply given by sqrt(numNeurons) because of the</span>
+<span class="comment">% partial correlation in their responses.  Rather, it is given by the</span>
+<span class="comment">% square root of</span>
+<span class="comment">%</span>
+<span class="comment">%    1</span>
+<span class="comment">%    - [1 + (N-1) p]</span>
+<span class="comment">%    N</span>
+<span class="comment">%</span>
+<span class="comment">% where N is the number of neurons and p is the correlation coefficient.</span>
+
+<span class="comment">% First plot the neurometric function again for a single neuron</span>
+plot(stimulusStrengths,pCorrect)
+xlabel(<span class="string">'Stimulus strength (% coherence)'</span>)
+ylabel(<span class="string">'Proportion correct'</span>)
+set(gca,<span class="string">'yLim'</span>,[0.5 1.01]);
+set(gca,<span class="string">'Ytick'</span>,[0.5 0.6 0.7 0.8 0.9 1.0]);
+</pre><img vspace="5" hspace="5" src="sdtTutorial_17.png"> <p>Compute and plot the neurometric functions for several different pool sizes, using this new factoid about the variance of
+            correlated random variables:
+         </p><pre class="codeinput">corCoeff=0.1;
+pCorrectN=zeros(length(stimulusStrengths),1);
+<span class="keyword">for</span> numNeurons=[2,10,100,1000]
+  SDfactor = sqrt((1/numNeurons) * (1 + (numNeurons-1)*corCoeff));
+  <span class="keyword">for</span> s=stimulusStrengths
+    j=s+1;
+    nullMean = zeroResponse - nullSlope*s;
+    nullSD = sqrt(fanoFactor*nullMean)*SDfactor;
+    nullCDF = normcdf(response,nullMean,nullSD);
+    prefMean = zeroResponse + prefSlope*s;
+    prefSD = sqrt(fanoFactor*prefMean)*SDfactor;;
+    prefPDF = normpdf(response,prefMean,prefSD);
+    pCorrectN(j) = sum(prefPDF.*nullCDF);
+  <span class="keyword">end</span>
+  hold <span class="string">on</span>
+  plot(stimulusStrengths,pCorrectN)
+  hold <span class="string">off</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Pooling over many partially correlated neurons causes much less</span>
+<span class="comment">% improvement in performance (the neurometric curves doen't shift to</span>
+<span class="comment">% terribly low thresholds), and there is virtually no improvement at all</span>
+<span class="comment">% for pool sizes larger than 100.  This should be evident by inspecting the</span>
+<span class="comment">% above equation.  When N is large:</span>
+<span class="comment">%</span>
+<span class="comment">%    1</span>
+<span class="comment">%    - [1 + (N-1) p]  -&gt;  p</span>
+<span class="comment">%    N</span>
+<span class="comment">%</span>
+<span class="comment">% Hence the correlation coefficient limits the efficacy of response</span>
+<span class="comment">% pooling.</span>
+</pre><img vspace="5" hspace="5" src="sdtTutorial_18.png"> <p class="footer"><br>
+            Published with MATLAB&reg; 7.1<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Simple Forced Choice% Imagine that you are doing a psychophysical detection experiment in which% a subject is asked to detect the presence of a brief, very dim flash of% light in a dark room.  You use a simple forced-choice method in which the% light is flashed on half of the trials (randomly interleaved).  On each% trial, the subject must respond "yes" or "no".  We assume that the% subjects' performance is determined by the number of photopigment% isomerizations on each trial.% When no light is flashed, there is still a certain probability that some% number of photoreceptors will respond, due to thermal isomerizations of% photopigment molecules.  Let's assume that on average only 3 photopigment% molecules isomerize.darkLight=3;% On each trial for no light was flashed, the response is given% by a draw from a Poisson distribution with this darkLight value% as its mean.  We can generate a bunch of samples from this% distribution by using the inverse cumulative of the Poisson% distribution ntrials=1000;xrand=rand(ntrials,1);noiseAloneResponses=poissinv(xrand,darkLight);% Plot a histogram of the noise-alone responses, superimposed% with the Poisson pdf:response=[0:20];noiseAlonePDF=poisspdf(response,darkLight);plot(response,noiseAlonePDF)axis([min(response) max(response) 0 0.25])xlabel('Response')ylabel('Probability')noiseAloneHist=hist(noiseAloneResponses,response);hold onbar(response,noiseAloneHist/ntrials)hold off%%% Next, let's use a stimulus intensity that causes 7 photopigment molecules% will isomerize on average for a given trial.  The total number of% isomerizations on a given trial includes those caused by photon% absoptions plus those that spontaneously isomerize.stimulusStrength=5;xrand=rand(1,ntrials);signalPlusNoiseResponses=poissinv(xrand,darkLight+stimulusStrength);% Plot a histogram of the signal-and-noise responses, superimposed with the% Poisson pdf:signalPlusNoisePDF=poisspdf(response,darkLight+stimulusStrength);plot(response,signalPlusNoisePDF)axis([min(response) max(response) 0 0.25])xlabel('Response')ylabel('Probability')signalPlusNoiseHist=hist(signalPlusNoiseResponses,response)hold onbar(response,signalPlusNoiseHist/ntrials)hold off%%% Plot the two Poisson pdf's (noiseAlone and signalPlusNoise) at the same% time:plot(response,[noiseAlonePDF' signalPlusNoisePDF'])legend('noise','signal');hold on;xlabel('Response')ylabel('Probability')%%% Let's say the subject uses a criterion of 4 isomerizations. That is,% whenever there are 4 or more isomerizations, they respond "yes the signal% was present".  When there are fewer than 4, then they say "no the signal% was not present".criterion=4;line=[4 0;4 0.25];plot(line(:,1),line(:,2),'r')% Everything to the right of the line corresponds to the "yes" response and% everything to the left corresponds to a "no".%%% There are four possible outcomes on a given trial: hit, miss, false% alarm, and correct rejection.  We can calculate the percentage of trials% that yield each of these outcomes from the simulated responses:missRate=sum(signalPlusNoiseResponses<criterion)/ntrialshitRate=sum(signalPlusNoiseResponses>=criterion)/ntrialscorrectRejectRate=sum(noiseAloneResponses<criterion)/ntrialsfalseAlarmRate=sum(noiseAloneResponses>=criterion)/ntrials% Notice that the first two (correctDetect and miss) rates must sum to 1% and the second two (falseAlarm correctReject) must sum to 1.  %%% We can also compute what these values should be based on the theoretical% Poisson distribution.missProbability=sum(signalPlusNoisePDF([1:criterion]))hitProbability=1-missProbabilitycorrectRejectProbability=sum(noiseAlonePDF([1:criterion]))falseAlarmProbability=1-correctRejectProbability%%% The hit rates and the false alarm rates all depend on the subject's% criterion.  We can plot an entire ROC curve by redoing the calculations% for a bunch of criteria:hitP=zeros(size(response));missP=zeros(size(response));correctRejectP=zeros(size(response));falseAlarmP=zeros(size(response));% c is the criterion, loops through taking on values of response=[0:20].% i=c+1 is the iteration index, since Matlab indexing starts counting from% 1 instead of 0.for c=response				  i=c+1;   missP(i)=sum(signalPlusNoisePDF([1:c]));  hitP(i)=1-missP(i);  correctRejectP(i)=sum(noiseAlonePDF([1:c]));  falseAlarmP(i)=1-correctRejectP(i);end  clf;plot(falseAlarmP,hitP)xlabel('False Alarm Rate')ylabel('Hit Rate')%%% Now we can repeat the whole thing for several different stimulus% strengths to produce a family of ROC curves.stimulusStrengths=[0:10];hitP=zeros([length(response),length(stimulusStrengths)]);missP=zeros([length(response),length(stimulusStrengths)]);correctRejectP=zeros([length(response),length(stimulusStrengths)]);falseAlarmP=zeros([length(response),length(stimulusStrengths)]);for s=stimulusStrengths  j=s+1;  signalPlusNoisePDF=poisspdf(response,darkLight+s);  for c=response				    i=c+1;     missP(i,j)=sum(signalPlusNoisePDF([1:c]));    hitP(i,j)=1-missP(i,j);    correctRejectP(i,j)=sum(noiseAlonePDF([1:c]));    falseAlarmP(i,j)=1-correctRejectP(i,j);  end  endplot(falseAlarmP,hitP)xlabel('False Alarm Rate')ylabel('Hit Rate')% As the stimulus strength is increased, there is less and less overlap% between the two (noiseAlonePDF, signalPlusNoisePDF) response% distributions, and ROC curve becomes more and more bowed away from the% diagonal.  For very weak stimuli there is no way to get a high hit rate% without also getting lots of false alarms.  In the limit, for a very% strong stimulus, you can get a perfect hit rate with no false alarms.%%% Next, repeat all of this for the equal-variance Gaussian casecriteria = -3:.1:10;stimulusStrengths=[0:5];hitP=zeros([length(criteria),length(stimulusStrengths)]);falseAlarmP=zeros([length(criteria),length(stimulusStrengths)]);for s=stimulusStrengths  j=s+1;  for c=1:length(criteria)				    crit = criteria(c);     hitP(c,j)=1-normcdf(crit,s,1);    falseAlarmP(c,j)=1-normcdf(crit,0,1);  end  endplot(falseAlarmP,hitP)xlabel('False Alarm Rate')ylabel('Hit Rate')axis squarefigure(2)plot(norminv(falseAlarmP),norminv(hitP))xlabel('z(False Alarm Rate)')ylabel('z(Hit Rate)')axis square%%% Next, repeat all of this for the UNequal-variance Gaussian casecriteria = -3:.1:10;stimulusStrengths=[0:5];hitP=zeros([length(criteria),length(stimulusStrengths)]);falseAlarmP=zeros([length(criteria),length(stimulusStrengths)]);for s=stimulusStrengths  j=s+1;  for c=1:length(criteria)				    crit = criteria(c);     hitP(c,j)=1-normcdf(crit,s,2);    falseAlarmP(c,j)=1-normcdf(crit,0,1);  end  endclose allplot(falseAlarmP,hitP)xlabel('False Alarm Rate')ylabel('Hit Rate')axis squarefigure(2)plot(norminv(falseAlarmP),norminv(hitP))xlabel('z(False Alarm Rate)')ylabel('z(Hit Rate)')axis square%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Two Alternative Forced Choice% We'll use the Newsome et al. direction discrimination experiments for an% example.  They recorded neural activity of MT neurons in response to% stimuli consisting of a field of coherently moving dots superimposed on a% field of randomly moving dots.  The strength of the motion signal was% controlled by varying the ratio of coherent to random dots.  The coherent% dots moved either in the cell's preferred direction or in the opposite% (null) direction.  The monkeys were trained to report the direction of% motion by making an eye movement at the end of each trial.%% Although Newsome et al. did not do it exactly this way, it will simplify% matters if we have two intervals in each trial.  A stimulus moves to the% right on one interval (chosen randomly), and it moves to the left on the% other interval.  On each trial, the monkey must choose the interval% during which the motion was rightward.  Because the stimulus is optimized% for the recorded neuron (covers the receptive field, moves in the% preferred direction, etc.), one might hypothesize that the monkey% monitors the response of that one neuron to make his decision, and% chooses the interval that evokes the greater response.  The task is very% difficult for low coherence levels (e.g., below 5%), and very easy for% high coherence leves (e.g., above 20%).%%% First, we adopt a simple model for how the neuron's response varies with% stimulus strength (percent coherence) for stimuli moving in the preferred% and null directions.stimulusStrengths=[0:25];   % percent coherencezeroResponse=20;			% firing rate for 0 coherenceprefSlope=1;nullSlope=1/4;prefResponses = zeroResponse + prefSlope*stimulusStrengths;nullResponses = zeroResponse - nullSlope*stimulusStrengths;plot(stimulusStrengths,[prefResponses' nullResponses'])xlabel('Stimulus strength (% coherence)')ylabel('Response (spikes/sec)')% For motion in the preferred direction, the simulated mean firing rate% rises linearly with coherence.  For motion in the null direction, the% mean firing rate declines linearly with coherence.%%% Next we adopt response probability density functions for to characterize% the variability in the responses. We'll use normal distributions with% the response variance set equal to 1.5 times the mean response. For% example, the response PDFs for 6 percent coherence (in preferred and null% directions) are:response=[0:50];		% range of possible responsess=6;					% 6 percent coherencefanoFactor=1.5;nullMean = zeroResponse - nullSlope*s;nullSD = sqrt(fanoFactor*nullMean);nullPDF = normpdf(response,nullMean,nullSD);prefMean = zeroResponse + prefSlope*s;prefSD = sqrt(fanoFactor*prefMean);prefPDF = normpdf(response,prefMean,prefSD);plot(response,[nullPDF' prefPDF'])xlabel('Response (spikes/sec)')ylabel('Probability')legend('null responses','preferred responses')%%% Finally, we compute the psychometric function (probability correct versus% conherence level) from the response probability densities at different% coherence levels. Probability correct is given by the integral of the% product of the prefPDF times the nullCDF (see sdtHandout for derivation).response=[0:100];			% range of possible responsespCorrect=zeros(length(stimulusStrengths),1);for s=stimulusStrengths  j=s+1;  nullMean = zeroResponse - nullSlope*s;  nullSD = sqrt(fanoFactor*nullMean);  nullCDF = normcdf(response,nullMean,nullSD);  prefMean = zeroResponse + prefSlope*s;  prefSD = sqrt(fanoFactor*prefMean);  prefPDF = normpdf(response,prefMean,prefSD);  pCorrect(j) = sum(prefPDF.*nullCDF);endplot(stimulusStrengths,pCorrect)xlabel('Stimulus strength (% coherence)')ylabel('Proportion correct')set(gca,'yLim',[0.5 1.01]);set(gca,'Ytick',[0.5 0.6 0.7 0.8 0.9 1.0]);%%% We can also simulate the experiment by taking draws from the two response% probability densities at each of the coherence levels, to double check% that the above calculation was correct.numTrials=50;				% #trials per coherence levelnumCorrect=zeros(length(stimulusStrengths),1);for s=stimulusStrengths  j=s+1;  nullMean = zeroResponse - nullSlope*s;  nullSD = sqrt(fanoFactor*nullMean);  prefMean = zeroResponse + prefSlope*s;  prefSD = sqrt(fanoFactor*prefMean);  for i=1:numTrials    % draw a null response from the nullPDF    nullResponse = nullMean + nullSD*randn;    % draw a pref response from the prefPDF    prefResponse = prefMean + prefSD*randn;    if (prefResponse > nullResponse)      numCorrect(j) = numCorrect(j)+1;    end  endendpercentCorrect=numCorrect/numTrials;% Plot simulated percentCorrect with previously computed% probability correct.hold onplot(stimulusStrengths,percentCorrect,'ob')hold off%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Response Pooling% In the first (simple forced choice, detecting a dim light flash) example,% we assumed that the responses of all of the photoreceptors were pooled% (summed) to make a perceptual decision.% In the second (two-alternative forced choice, motion discrimination)% example, we assumed that the perceptual decision was based on the% responses of only one MT neuron. What if we were to pool the responses of% many such MT neurons? Let's start by pooling the responses of just 2% neurons, by assuming that the neurons' responses are statistically% independent, and by adopting a response pooling rule in which the% responses of the individual neurons are simply averaged.% Rerun the above simulation, averaging the responses of two neurons on% each interval of each trial:numNeurons=2;numCorrect=zeros(length(stimulusStrengths),1);for s=stimulusStrengths  j=s+1;  nullMean = zeroResponse - nullSlope*s;  nullSD = sqrt(fanoFactor*nullMean);  prefMean = zeroResponse + prefSlope*s;  prefSD = sqrt(fanoFactor*prefMean);  for i=1:numTrials    % draw null responses from the nullPDF, and average them    nullResponse = mean(nullMean + nullSD*randn(numNeurons,1));    % draw pref responses from the prefPDF, and average them    prefResponse = mean(prefMean + prefSD*randn(numNeurons,1));    if (prefResponse > nullResponse)      numCorrect(j) = numCorrect(j)+1;    end  endendpercentCorrect2=numCorrect/numTrials;% Plot this new simulated psychometric data (in magenta) on top of the% previous simulation.hold onplot(stimulusStrengths,percentCorrect2,'om')hold off%%% Most of the new magenta data points should lie above and to the left of% the previously plotted blue data points. Not surprisingly, pooling% statistically independent responses improves performance.% In fact, we know exactly how much pooling helps.  The variance of the sum% of a bunch of independent random variables is the sum of the individual% variances. Hence, the standard deviation of the mean response decreases% as the square root of the number of neurons in the pool.% First plot the neurometric function again for a single neuron:plot(stimulusStrengths,pCorrect)xlabel('Stimulus strength (% coherence)')ylabel('Proportion correct')set(gca,'yLim',[0.5 1.01]);set(gca,'Ytick',[0.5 0.6 0.7 0.8 0.9 1.0]);% Compute and plot the neurometric functions for several different pool% sizes, using this sqrt-N factoid:pCorrectN=zeros(length(stimulusStrengths),1);for numNeurons=[2,10,100]  for s=stimulusStrengths    j=s+1;    nullMean = zeroResponse - nullSlope*s;    nullSD = sqrt(fanoFactor*nullMean)/sqrt(numNeurons);    nullCDF = normcdf(response,nullMean,nullSD);    prefMean = zeroResponse + prefSlope*s;    prefSD = sqrt(fanoFactor*prefMean)/sqrt(numNeurons);;    prefPDF = normpdf(response,prefMean,prefSD);    pCorrectN(j) = sum(prefPDF.*nullCDF);  end  hold on  plot(stimulusStrengths,pCorrectN)  hold offend% As the pool size increases, the neurometric function becomes very steep.% Large pool sizes predict unreasonably good performance.%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Covariance of Responses% But what if the neurons' responses are NOT statistically independent?  It% is typically the case that for nearby cortical neurons, the spike counts% from trial to trial are correlated with one another.% It turns out that there is again a relatively simple formula that allows% us to compute the variance of the pooled responses. The improvement with% pool size is no longer simply given by sqrt(numNeurons) because of the% partial correlation in their responses.  Rather, it is given by the% square root of%%    1%    - [1 + (N-1) p]%    N%% where N is the number of neurons and p is the correlation coefficient.% First plot the neurometric function again for a single neuronplot(stimulusStrengths,pCorrect)xlabel('Stimulus strength (% coherence)')ylabel('Proportion correct')set(gca,'yLim',[0.5 1.01]);set(gca,'Ytick',[0.5 0.6 0.7 0.8 0.9 1.0]);%%% Compute and plot the neurometric functions for several% different pool sizes, using this new factoid about the variance% of correlated random variables:corCoeff=0.1;pCorrectN=zeros(length(stimulusStrengths),1);for numNeurons=[2,10,100,1000]  SDfactor = sqrt((1/numNeurons) * (1 + (numNeurons-1)*corCoeff));  for s=stimulusStrengths    j=s+1;    nullMean = zeroResponse - nullSlope*s;    nullSD = sqrt(fanoFactor*nullMean)*SDfactor;    nullCDF = normcdf(response,nullMean,nullSD);    prefMean = zeroResponse + prefSlope*s;    prefSD = sqrt(fanoFactor*prefMean)*SDfactor;;    prefPDF = normpdf(response,prefMean,prefSD);    pCorrectN(j) = sum(prefPDF.*nullCDF);  end  hold on  plot(stimulusStrengths,pCorrectN)  hold offend% Pooling over many partially correlated neurons causes much less% improvement in performance (the neurometric curves doen't shift to% terribly low thresholds), and there is virtually no improvement at all% for pool sizes larger than 100.  This should be evident by inspecting the% above equation.  When N is large:%%    1%    - [1 + (N-1) p]  ->  p%    N%% Hence the correlation coefficient limits the efficacy of response% pooling. 
+##### SOURCE END #####
+-->
+   </body>
+</html>
