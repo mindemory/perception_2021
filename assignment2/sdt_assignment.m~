@@ -1,0 +1,73 @@
+clear; close all; clc;
+
+%% Q1a)
+stim_dur = linspace(0.1, 2, 20);
+trials_per_experiment = 100;
+contrast = 0.2;
+var = 1;
+
+trialspace = rand(trials_per_experiment, 1);
+trialspace = (trialspace>.5) -1 * (trialspace<=.5);
+percentage_correct = [];
+dprime = [];
+for dur = stim_dur
+    time_steps = dur * 10;
+
+    B_mean = -2 * time_steps * contrast;
+    A_mean = 2 * time_steps * contrast;
+    B_var = time_steps * var;
+    A_var = time_steps * var;
+    optim_criterion = (A_mean + B_mean) / 2;
+    
+    evidence = time_steps * 2 * contrast * trialspace + trialspace .* rand(trials_per_experiment, 1);
+
+    response = (evidence>0) -1 * (evidence<=0);
+    hits = 0;
+    misses = 0;
+    correct_rejects = 0;
+    false_alarms = 0;
+    for i = 1:trials_per_experiment
+        if trialspace(i) == 1
+            if response(i) == 1
+                hits = hits + 1;
+            else
+                misses = misses + 1;
+            end
+        else
+            if response(i) == -1
+                correct_rejects = correct_rejects + 1;
+            else
+                false_alarms = false_alarms + 1;
+            end
+        end
+    end
+    
+    pcorrect = h
+    percentage_correct = [percentage_correct
+    
+    
+    
+
+%     resp_range = linspace(B_mean-2*B_var, A_mean+2*A_var, 100);
+%     B_pdf = normpdf(resp_range, B_mean, sqrt(B_var));
+%     B_cdf = normcdf(resp_range, B_mean, sqrt(B_var));
+%     A_pdf = normpdf(resp_range, A_mean, sqrt(A_var));
+%     figure();
+%     plot(resp_range, [B_pdf', A_pdf'])
+%     ylabel('Probability')
+%     xlabel('Total evidence')
+%     legend('B', 'A')
+%     title('A and B pdfs')
+%     percentage_correct = [percentage_correct, sum(A_pdf .* B_cdf)];
+%     dprime = [dprime, A_mean - B_mean];
+end
+% figure();
+% plot(stim_dur, percentage_correct, 'b-o', 'LineWidth', 2, ...
+%     'MarkerSize', 5)
+% xlabel('Duration of stimulus (ms)')
+% ylabel('Percentage correct')
+% figure();
+% plot(stim_dur, dprime, 'm-o', 'LineWidth', 2, ...
+%     'MarkerSize', 5);
+% xlabel('Duration of stimulus (ms)')
+% ylabel("d'")
