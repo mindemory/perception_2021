@@ -27,10 +27,9 @@ for i = 1:length(stim_dur)
     percentage_correct_theor(i) = pcorr_theor;
     dprime_theor(i) = dp_theor;
 end
-figure(1);
-xlab = 'Duration of stimulus (s)';
+
 plot_figs(stim_dur, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
-    dprime_theor, xlab)
+    xlab = 'Duration of stimulus (s)')
 
 %% constant duration and variable contrast
 dur = 0.2;
@@ -55,9 +54,31 @@ for i = 1:length(stim_contrast)
 end
 
 figure(2);
-xlab = 'Contrast of stimulus (s)';
-plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
-    dprime_theor, xlab)
+subplot(2, 2,1)
+plot(stim_contrast, percentage_correct_simul, 'b-o', 'LineWidth', 2, ...
+    'MarkerSize', 5)
+xlabel('Contrast of stimulus')
+ylabel('Percentage correct')
+title('Psychometric function simulation')
+subplot(2, 2,2)
+plot(stim_contrast, dprime_simul, 'm-o', 'LineWidth', 2, ...
+    'MarkerSize', 5);
+xlabel('Contrast of stimulus')
+ylabel("d'")
+title("d' simulation")
+
+subplot(2, 2, 3)
+plot(stim_contrast, percentage_correct_theor, 'b-o', 'LineWidth', 2, ...
+    'MarkerSize', 5)
+xlabel('Contrast of stimulus')
+ylabel('Percentage correct')
+title('Psychometric function theoretical')
+subplot(2, 2, 4)
+plot(stim_contrast, dprime_theor, 'm-o', 'LineWidth', 2, ...
+    'MarkerSize', 5);
+xlabel('Contrast of stimulus')
+ylabel("d'")
+title("d' theoretical")
 
 
 %%%%%%%%
@@ -70,15 +91,59 @@ var = 1;
 trialspace = rand(trials_per_experiment, 1);
 trialspace = (trialspace>.25) -1 * (trialspace<=.25);
 
-[optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
-    run_experiment(dur, contrast, var,...
-    trialspace, trials_per_experiment, crit);
-disp(['The optimum criterion is: ', num2str(optim_criterion)])
+time_steps = dur * 10;
+B_mean = -2 * time_steps * contrast;
+A_mean = 2 * time_steps * contrast;
+B_var = time_steps * var;
+A_var = time_steps * var;
 
-%figure(3);
-%xlab = 'Contrast of stimulus (s)';
-%plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
-%    dprime_theor, xlab)
+
+
+percentage_correct_simul = zeros(size(stim_dur));
+dprime_simul = zeros(size(stim_dur));
+percentage_correct_theor = zeros(size(stim_dur));
+dprime_theor = zeros(size(stim_dur));
+%crit = None;
+for i = 1:length(stim_dur)
+    dur = stim_dur(i);
+    [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
+        run_experiment(dur, contrast, var,...
+        trialspace, trials_per_experiment, crit);
+    if i == 1
+        disp(['The optimum criterion is: ', num2str(optim_criterion)])
+    end
+    percentage_correct_simul(i) = pcorr_simul;
+    dprime_simul(i) = dp_simul;
+    percentage_correct_theor(i) = pcorr_theor;
+    dprime_theor(i) = dp_theor;
+end
+
+figure(3);
+subplot(2, 2,1)
+plot(stim_dur, percentage_correct_simul, 'b-o', 'LineWidth', 2, ...
+    'MarkerSize', 5)
+xlabel('Duration of stimulus (s)')
+ylabel('Percentage correct')
+title('Psychometric function simulation')
+subplot(2, 2,2)
+plot(stim_dur, dprime_simul, 'm-o', 'LineWidth', 2, ...
+    'MarkerSize', 5);
+xlabel('Duration of stimulus (s)')
+ylabel("d'")
+title("d' simulation")
+
+subplot(2, 2, 3)
+plot(stim_dur, percentage_correct_theor, 'b-o', 'LineWidth', 2, ...
+    'MarkerSize', 5)
+xlabel('Duration of stimulus (s)')
+ylabel('Percentage correct')
+title('Psychometric function theoretical')
+subplot(2, 2, 4)
+plot(stim_dur, dprime_theor, 'm-o', 'LineWidth', 2, ...
+    'MarkerSize', 5);
+xlabel('Duration of stimulus (s)')
+ylabel("d'")
+title("d' theoretical")
 
 
 function [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
@@ -98,7 +163,10 @@ function [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
         sqrt(A_var) * trials .* randn(t_length, 1);
 
     response = (evidence > crit) -1 * (evidence <= crit);
-    H = 0; M = 0; CR = 0; FA = 0;
+    H = 0;
+    M = 0;
+    CR = 0;
+    FA = 0;
     for i = 1:t_length
         if trials(i) == 1
             if response(i) == 1
@@ -131,36 +199,12 @@ function [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
     
     %% Theoretical
     resp_range = B_mean-3*B_var: 0.01: A_mean+3*A_var;
+    %B_pdf = normpdf(resp_range, B_mean, sqrt(B_var));
     B_cdf = normcdf(resp_range, B_mean, sqrt(B_var));
+    %A_cdf = normcdf(resp_range, A_mean, sqrt(A_var));
     A_pdf = normpdf(resp_range, A_mean, sqrt(A_var));
     pcorr_theor = sum(A_pdf .* B_cdf);
     dp_theor = (A_mean - B_mean)/sqrt(A_var);
 end
 
-function plot_figs(x, y1, y2, y3, y4, xlab)
-    subplot(2, 2, 1)
-    plot(x, y1, 'b-o', 'LineWidth', 2, ...
-        'MarkerSize', 5)
-    xlabel(xlab)
-    ylabel('Percentage correct')
-    title('Psychometric function simulation')
-    subplot(2, 2,2)
-    plot(x, y2, 'm-o', 'LineWidth', 2, ...
-        'MarkerSize', 5);
-    xlabel(xlab)
-    ylabel("d'")
-    title("d' simulation")
-
-    subplot(2, 2, 3)
-    plot(x, y3, 'b-o', 'LineWidth', 2, ...
-        'MarkerSize', 5)
-    xlabel(xlab)
-    ylabel('Percentage correct')
-    title('Psychometric function theoretical')
-    subplot(2, 2, 4)
-    plot(x, y4, 'm-o', 'LineWidth', 2, ...
-        'MarkerSize', 5);
-    xlabel(xlab)
-    ylabel("d'")
-    title("d' theoretical")
-end
+function plot_figs

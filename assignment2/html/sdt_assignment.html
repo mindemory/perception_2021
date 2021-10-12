@@ -1,0 +1,571 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>sdt_assignment</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-10-12"><meta name="DC.source" content="sdt_assignment.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Q1a)</a></li><li><a href="#3">variable duration and constant contrast</a></li><li><a href="#4">constant duration and variable contrast</a></li><li><a href="#5">Q1b)</a></li><li><a href="#6">Simulation</a></li><li><a href="#7">Theoretical</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">Q1a)</h2><h2 id="3">variable duration and constant contrast</h2><pre class="codeinput">stim_dur = 0.1: 0.1: 2;
+trials_per_experiment = 10000;
+contrast = 0.2;
+var = 1;
+
+trialspace = rand(trials_per_experiment, 1);
+trialspace = (trialspace&gt;.5) -1 * (trialspace&lt;=.5);
+percentage_correct_simul = zeros(size(stim_dur));
+dprime_simul = zeros(size(stim_dur));
+percentage_correct_theor = zeros(size(stim_dur));
+dprime_theor = zeros(size(stim_dur));
+crit = <span class="string">'None'</span>;
+<span class="keyword">for</span> i = 1:length(stim_dur)
+    dur = stim_dur(i);
+    [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
+        run_experiment(dur, contrast, var,<span class="keyword">...</span>
+        trialspace, trials_per_experiment, crit);
+    <span class="keyword">if</span> i == 1
+        disp([<span class="string">'The optimum criterion is: '</span>, num2str(optim_criterion)])
+    <span class="keyword">end</span>
+    percentage_correct_simul(i) = pcorr_simul;
+    dprime_simul(i) = dp_simul;
+    percentage_correct_theor(i) = pcorr_theor;
+    dprime_theor(i) = dp_theor;
+<span class="keyword">end</span>
+figure(1);
+xlab = <span class="string">'Duration of stimulus (s)'</span>;
+plot_figs(stim_dur, percentage_correct_simul, dprime_simul, percentage_correct_theor, <span class="keyword">...</span>
+    dprime_theor, xlab)
+</pre><pre class="codeoutput">The optimum criterion is: 0
+
+ax1 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.7673 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+
+ax2 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.5482 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+
+ax3 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.3291 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+
+ax4 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.1100 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+</pre><img vspace="5" hspace="5" src="sdt_assignment_01.png" alt=""> <h2 id="4">constant duration and variable contrast</h2><pre class="codeinput">dur = 0.2;
+stim_contrast = 0.05: 0.05: 1;
+
+percentage_correct_simul = zeros(size(stim_contrast));
+dprime_simul = zeros(size(stim_contrast));
+percentage_correct_theor = zeros(size(stim_contrast));
+dprime_theor = zeros(size(stim_contrast));
+<span class="keyword">for</span> i = 1:length(stim_contrast)
+    contrast = stim_contrast(i);
+    [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
+        run_experiment(dur, contrast, var,<span class="keyword">...</span>
+        trialspace, trials_per_experiment, crit);
+    <span class="keyword">if</span> i == 1
+        disp([<span class="string">'The optimum criterion is: '</span>, num2str(optim_criterion)])
+    <span class="keyword">end</span>
+    percentage_correct_simul(i) = pcorr_simul;
+    dprime_simul(i) = dp_simul;
+    percentage_correct_theor(i) = pcorr_theor;
+    dprime_theor(i) = dp_theor;
+<span class="keyword">end</span>
+
+figure(2);
+xlab = <span class="string">'Contrast of stimulus (s)'</span>;
+plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, <span class="keyword">...</span>
+    dprime_theor, xlab)
+
+
+<span class="comment">%%%%%%%%</span>
+</pre><pre class="codeoutput">The optimum criterion is: 0
+
+ax1 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.7673 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+
+ax2 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.5482 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+
+ax3 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.3291 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+
+ax4 = 
+
+  Axes with properties:
+
+             XLim: [0 1]
+             YLim: [0 1]
+           XScale: 'linear'
+           YScale: 'linear'
+    GridLineStyle: '-'
+         Position: [0.1300 0.1100 0.7750 0.1577]
+            Units: 'normalized'
+
+  Use GET to show all properties
+
+</pre><img vspace="5" hspace="5" src="sdt_assignment_03.png" alt=""> <h2 id="5">Q1b)</h2><pre class="codeinput">dur = 0.4;
+trials_per_experiment = 100;
+contrast = 0.1;
+var = 1;
+
+trialspace = rand(trials_per_experiment, 1);
+trialspace = (trialspace&gt;.25) -1 * (trialspace&lt;=.25);
+
+time_steps = dur * 10;
+B_mean = -2 * time_steps * contrast;
+A_mean = 2 * time_steps * contrast;
+B_var = time_steps * var;
+A_var = time_steps * var;
+
+percentage_correct_simul = zeros(size(stim_dur));
+dprime_simul = zeros(size(stim_dur));
+percentage_correct_theor = zeros(size(stim_dur));
+dprime_theor = zeros(size(stim_dur));
+<span class="comment">%crit = None;</span>
+<span class="keyword">for</span> i = 1:length(stim_dur)
+    dur = stim_dur(i);
+    [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
+        run_experiment(dur, contrast, var,<span class="keyword">...</span>
+        trialspace, trials_per_experiment, crit);
+    <span class="keyword">if</span> i == 1
+        disp([<span class="string">'The optimum criterion is: '</span>, num2str(optim_criterion)])
+    <span class="keyword">end</span>
+    percentage_correct_simul(i) = pcorr_simul;
+    dprime_simul(i) = dp_simul;
+    percentage_correct_theor(i) = pcorr_theor;
+    dprime_theor(i) = dp_theor;
+<span class="keyword">end</span>
+
+<span class="comment">%figure(3);</span>
+<span class="comment">%xlab = 'Contrast of stimulus (s)';</span>
+<span class="comment">%plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...</span>
+<span class="comment">%    dprime_theor, xlab)</span>
+
+
+<span class="keyword">function</span> [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
+    run_experiment(dur, contrast, var, trials, t_length, crit)
+</pre><h2 id="6">Simulation</h2><pre class="codeinput">    time_steps = dur * 10;
+    B_mean = -2 * time_steps * contrast;
+    A_mean = 2 * time_steps * contrast;
+    B_var = time_steps * var;
+    A_var = time_steps * var;
+    optim_criterion = (A_mean + B_mean) / 2;
+    <span class="keyword">if</span> crit == <span class="string">'None'</span>
+        crit = optim_criterion;
+    <span class="keyword">end</span>
+
+    evidence = time_steps * 2 * contrast * trials + <span class="keyword">...</span>
+        sqrt(A_var) * trials .* randn(t_length, 1);
+
+    response = (evidence &gt; crit) -1 * (evidence &lt;= crit);
+    H = 0;
+    M = 0;
+    CR = 0;
+    FA = 0;
+    <span class="keyword">for</span> i = 1:t_length
+        <span class="keyword">if</span> trials(i) == 1
+            <span class="keyword">if</span> response(i) == 1
+                H = H + 1;
+            <span class="keyword">else</span>
+                M = M + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">else</span>
+            <span class="keyword">if</span> response(i) == -1
+                CR = CR + 1;
+            <span class="keyword">else</span>
+                FA = FA + 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    pcorr_simul = (H + CR) * 100/t_length;
+
+    Hrate = H/(H+M);
+    FArate = FA/(FA+CR);
+    <span class="keyword">if</span> Hrate == 1
+        Hrate = 0.9999;
+    <span class="keyword">end</span>
+    <span class="keyword">if</span> FArate == 0
+        FArate = 0.0001;
+    <span class="keyword">end</span>
+    zH = -sqrt(2) * erfcinv(2*Hrate);
+    zFA = -sqrt(2) * erfcinv(2*FArate);
+    dp_simul = zH - zFA;
+</pre><img vspace="5" hspace="5" src="sdt_assignment_02.png" alt=""> <h2 id="7">Theoretical</h2><pre class="codeinput">    resp_range = B_mean-3*B_var: 0.01: A_mean+3*A_var;
+    <span class="comment">%B_pdf = normpdf(resp_range, B_mean, sqrt(B_var));</span>
+    B_cdf = normcdf(resp_range, B_mean, sqrt(B_var));
+    <span class="comment">%A_cdf = normcdf(resp_range, A_mean, sqrt(A_var));</span>
+    A_pdf = normpdf(resp_range, A_mean, sqrt(A_var));
+    pcorr_theor = sum(A_pdf .* B_cdf);
+    dp_theor = (A_mean - B_mean)/sqrt(A_var);
+</pre><pre class="codeinput"><span class="keyword">end</span>
+
+<span class="keyword">function</span> plot_figs(x, y1, y2, y3, y4, xlab)
+    ax1 = subplot(4, 1, 1)
+    plot(x, y1, <span class="string">'b-o'</span>, <span class="string">'LineWidth'</span>, 2, <span class="keyword">...</span>
+        <span class="string">'MarkerSize'</span>, 5)
+    xlabel(xlab)
+    ylabel(<span class="string">'Percentage correct'</span>)
+    title(<span class="string">'Psychometric function simulation'</span>)
+    ax2 = subplot(4, 1, 2)
+    plot(x, y2, <span class="string">'m-o'</span>, <span class="string">'LineWidth'</span>, 2, <span class="keyword">...</span>
+        <span class="string">'MarkerSize'</span>, 5);
+    xlabel(xlab)
+    ylabel(<span class="string">"d'"</span>)
+    title(<span class="string">"d' simulation"</span>)
+
+    ax3 = subplot(4, 1, 3)
+    plot(x, y3, <span class="string">'b-o'</span>, <span class="string">'LineWidth'</span>, 2, <span class="keyword">...</span>
+        <span class="string">'MarkerSize'</span>, 5)
+    xlabel(xlab)
+    ylabel(<span class="string">'Percentage correct'</span>)
+    title(<span class="string">'Psychometric function theoretical'</span>)
+    ax4 = subplot(4, 1, 4)
+    plot(x, y4, <span class="string">'m-o'</span>, <span class="string">'LineWidth'</span>, 2, <span class="keyword">...</span>
+        <span class="string">'MarkerSize'</span>, 5);
+    xlabel(xlab)
+    ylabel(<span class="string">"d'"</span>)
+    title(<span class="string">"d' theoretical"</span>)
+    linkaxes([ax1, ax2, ax3, ax4], <span class="string">'x'</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">The optimum criterion is: 0
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%% Q1a)
+%% variable duration and constant contrast
+stim_dur = 0.1: 0.1: 2;
+trials_per_experiment = 10000;
+contrast = 0.2;
+var = 1;
+
+trialspace = rand(trials_per_experiment, 1);
+trialspace = (trialspace>.5) -1 * (trialspace<=.5);
+percentage_correct_simul = zeros(size(stim_dur));
+dprime_simul = zeros(size(stim_dur));
+percentage_correct_theor = zeros(size(stim_dur));
+dprime_theor = zeros(size(stim_dur));
+crit = 'None';
+for i = 1:length(stim_dur)
+    dur = stim_dur(i);
+    [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
+        run_experiment(dur, contrast, var,...
+        trialspace, trials_per_experiment, crit);
+    if i == 1
+        disp(['The optimum criterion is: ', num2str(optim_criterion)])
+    end
+    percentage_correct_simul(i) = pcorr_simul;
+    dprime_simul(i) = dp_simul;
+    percentage_correct_theor(i) = pcorr_theor;
+    dprime_theor(i) = dp_theor;
+end
+figure(1);
+xlab = 'Duration of stimulus (s)';
+plot_figs(stim_dur, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
+    dprime_theor, xlab)
+
+%% constant duration and variable contrast
+dur = 0.2;
+stim_contrast = 0.05: 0.05: 1;
+
+percentage_correct_simul = zeros(size(stim_contrast));
+dprime_simul = zeros(size(stim_contrast));
+percentage_correct_theor = zeros(size(stim_contrast));
+dprime_theor = zeros(size(stim_contrast));
+for i = 1:length(stim_contrast)
+    contrast = stim_contrast(i);
+    [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
+        run_experiment(dur, contrast, var,...
+        trialspace, trials_per_experiment, crit);
+    if i == 1
+        disp(['The optimum criterion is: ', num2str(optim_criterion)])
+    end
+    percentage_correct_simul(i) = pcorr_simul;
+    dprime_simul(i) = dp_simul;
+    percentage_correct_theor(i) = pcorr_theor;
+    dprime_theor(i) = dp_theor;
+end
+
+figure(2);
+xlab = 'Contrast of stimulus (s)';
+plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
+    dprime_theor, xlab)
+
+
+%%%%%%%%
+%% Q1b)
+dur = 0.4;
+trials_per_experiment = 100;
+contrast = 0.1;
+var = 1;
+
+trialspace = rand(trials_per_experiment, 1);
+trialspace = (trialspace>.25) -1 * (trialspace<=.25);
+
+time_steps = dur * 10;
+B_mean = -2 * time_steps * contrast;
+A_mean = 2 * time_steps * contrast;
+B_var = time_steps * var;
+A_var = time_steps * var;
+
+percentage_correct_simul = zeros(size(stim_dur));
+dprime_simul = zeros(size(stim_dur));
+percentage_correct_theor = zeros(size(stim_dur));
+dprime_theor = zeros(size(stim_dur));
+%crit = None;
+for i = 1:length(stim_dur)
+    dur = stim_dur(i);
+    [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
+        run_experiment(dur, contrast, var,...
+        trialspace, trials_per_experiment, crit);
+    if i == 1
+        disp(['The optimum criterion is: ', num2str(optim_criterion)])
+    end
+    percentage_correct_simul(i) = pcorr_simul;
+    dprime_simul(i) = dp_simul;
+    percentage_correct_theor(i) = pcorr_theor;
+    dprime_theor(i) = dp_theor;
+end
+
+%figure(3);
+%xlab = 'Contrast of stimulus (s)';
+%plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
+%    dprime_theor, xlab)
+
+
+function [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
+    run_experiment(dur, contrast, var, trials, t_length, crit)
+    %% Simulation
+    time_steps = dur * 10;
+    B_mean = -2 * time_steps * contrast;
+    A_mean = 2 * time_steps * contrast;
+    B_var = time_steps * var;
+    A_var = time_steps * var;
+    optim_criterion = (A_mean + B_mean) / 2;
+    if crit == 'None'
+        crit = optim_criterion;
+    end
+    
+    evidence = time_steps * 2 * contrast * trials + ...
+        sqrt(A_var) * trials .* randn(t_length, 1);
+
+    response = (evidence > crit) -1 * (evidence <= crit);
+    H = 0;
+    M = 0;
+    CR = 0;
+    FA = 0;
+    for i = 1:t_length
+        if trials(i) == 1
+            if response(i) == 1
+                H = H + 1;
+            else
+                M = M + 1;
+            end
+        else
+            if response(i) == -1
+                CR = CR + 1;
+            else
+                FA = FA + 1;
+            end
+        end
+    end
+    
+    pcorr_simul = (H + CR) * 100/t_length;
+    
+    Hrate = H/(H+M);
+    FArate = FA/(FA+CR);
+    if Hrate == 1
+        Hrate = 0.9999;
+    end
+    if FArate == 0
+        FArate = 0.0001;
+    end
+    zH = -sqrt(2) * erfcinv(2*Hrate);
+    zFA = -sqrt(2) * erfcinv(2*FArate);
+    dp_simul = zH - zFA;
+    
+    %% Theoretical
+    resp_range = B_mean-3*B_var: 0.01: A_mean+3*A_var;
+    %B_pdf = normpdf(resp_range, B_mean, sqrt(B_var));
+    B_cdf = normcdf(resp_range, B_mean, sqrt(B_var));
+    %A_cdf = normcdf(resp_range, A_mean, sqrt(A_var));
+    A_pdf = normpdf(resp_range, A_mean, sqrt(A_var));
+    pcorr_theor = sum(A_pdf .* B_cdf);
+    dp_theor = (A_mean - B_mean)/sqrt(A_var);
+end
+
+function plot_figs(x, y1, y2, y3, y4, xlab)
+    ax1 = subplot(4, 1, 1)
+    plot(x, y1, 'b-o', 'LineWidth', 2, ...
+        'MarkerSize', 5)
+    xlabel(xlab)
+    ylabel('Percentage correct')
+    title('Psychometric function simulation')
+    ax2 = subplot(4, 1, 2)
+    plot(x, y2, 'm-o', 'LineWidth', 2, ...
+        'MarkerSize', 5);
+    xlabel(xlab)
+    ylabel("d'")
+    title("d' simulation")
+
+    ax3 = subplot(4, 1, 3)
+    plot(x, y3, 'b-o', 'LineWidth', 2, ...
+        'MarkerSize', 5)
+    xlabel(xlab)
+    ylabel('Percentage correct')
+    title('Psychometric function theoretical')
+    ax4 = subplot(4, 1, 4)
+    plot(x, y4, 'm-o', 'LineWidth', 2, ...
+        'MarkerSize', 5);
+    xlabel(xlab)
+    ylabel("d'")
+    title("d' theoretical")
+    linkaxes([ax1, ax2, ax3, ax4], 'x')
+end
+##### SOURCE END #####
+--></body></html>
