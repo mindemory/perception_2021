@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>sdt_assignment</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-10-12"><meta name="DC.source" content="sdt_assignment.m"><style type="text/css">
+      --><title>sdt_assignment</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-10-13"><meta name="DC.source" content="sdt_assignment.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,19 +66,18 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Q1a)</a></li><li><a href="#3">variable duration and constant contrast</a></li><li><a href="#4">constant duration and variable contrast</a></li><li><a href="#5">Q1b)</a></li><li><a href="#6">Q2</a></li><li><a href="#7">Simulation</a></li><li><a href="#8">Theoretical</a></li><li><a href="#11">Simulation</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
-</pre><h2 id="2">Q1a)</h2><h2 id="3">variable duration and constant contrast</h2><pre class="codeinput">stim_dur = 0.1: 0.1: 2;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Q1a)</a></li><li><a href="#3">variable duration and constant contrast</a></li><li><a href="#8">constant duration and variable contrast</a></li><li><a href="#13">Q1b)</a></li><li><a href="#16">Q2</a></li><li><a href="#20">Simulation for AFC</a></li><li><a href="#38">Theoretical for AFC</a></li><li><a href="#39">Function to run AFC_experiment</a></li><li><a href="#40">Simulation for RT</a></li><li><a href="#48">Function to run reaction-time experiment</a></li><li><a href="#49">Function to create plots</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">Q1a)</h2><h2 id="3">variable duration and constant contrast</h2><p>Setting up the constants: stimulus_duration varies between 0.1 s to 2 s, lets say there are 10000 trials per experiment, the contrast is given to be 0.2, the variance of both the distributions is 1, and A and B are equally likely to pA = 0.5</p><pre class="codeinput">stim_dur = 0.1: 0.1: 2;
 trials_per_experiment = 10000;
 contrast = 0.2;
 var_dist = 1;
 pA = 0.5;
-
-percentage_correct_simul = zeros(size(stim_dur));
+</pre><p>Next, arrays that will hold simulated percentage correct, simulated dprime, theoretical percentage correct, and theoretical dprime are initialized. The critical value is not given so lets initialize it to None, this will make use of the optimal criterion.</p><pre class="codeinput">percentage_correct_simul = zeros(size(stim_dur));
 dprime_simul = zeros(size(stim_dur));
 percentage_correct_theor = zeros(size(stim_dur));
 dprime_theor = zeros(size(stim_dur));
-crit = <span class="string">'None'</span>;
-<span class="keyword">for</span> i = 1:length(stim_dur)
+crit = 10000;
+</pre><p>For each stim_duration, run the experiment AFC_experiment. Here the optimal criterion is expected to be zero as that is where the two distributions will overlap given that their means are +2*c*time_steps and -2*c*time_steps and that they have the same standard deviation.</p><pre class="codeinput"><span class="keyword">for</span> i = 1:length(stim_dur)
     dur = stim_dur(i);
     [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
         AFC_experiment(dur, contrast, var_dist,<span class="keyword">...</span>
@@ -96,16 +95,14 @@ figure(1);
 xlab = <span class="string">'Duration of stimulus (s)'</span>;
 plot_figs(stim_dur, percentage_correct_simul, dprime_simul, percentage_correct_theor, <span class="keyword">...</span>
     dprime_theor, xlab)
-</pre><pre class="codeoutput">The optimum criterion is: 0
-</pre><img vspace="5" hspace="5" src="sdt_assignment_01.png" alt=""> <h2 id="4">constant duration and variable contrast</h2><pre class="codeinput">dur = 0.2;
+</pre><img vspace="5" hspace="5" src="sdt_assignment_01.png" alt=""> <p>From the graphs, we can see that the theoretical predictions match the simulations. Specifically we see that the percentage correct increases monotonically as the stimulus duration increases as this allows the subject to accumulate more evidence and hence respond correctly more often. This is the psychometric function and it begins saturating as the stimulus duration increase does not have as much impact on the performance after a certain threshold.</p><p>d' is the sensitivity of the stimulus and it increases with the duration as the evidence accumulated increases. This is because each evidence comes from a normal distribution of mean 2*c for A and -2*c for B. As duration of the stimulus increases, the timesteps in which the evidence is accumulated increases and the resulting evidence now comes from a normal distribution of mean 2*c*time_steps for A and -2*c*time_steps for B. Therefore, the two distributions get further and further apart thereby increasing the d'.</p><h2 id="8">constant duration and variable contrast</h2><p>Setting up the constants: duration of stimulus is now constant at 0.2 s, lets say there are 10000 trials per experiment, the contrast varies between 0.05 and 1. The variance of both the distributions is 1, and A and B are equally likely to pA = 0.5</p><pre class="codeinput">dur = 0.2;
 stim_contrast = 0.05: 0.05: 1;
 pA = 0.5;
-percentage_correct_simul = zeros(size(stim_contrast));
+</pre><p>Next, arrays that will hold simulated percentage correct, simulated dprime, theoretical percentage correct, and theoretical dprime are initialized. The critical value is not given so lets initialize it to None, this will make use of the optimal criterion.</p><pre class="codeinput">percentage_correct_simul = zeros(size(stim_contrast));
 dprime_simul = zeros(size(stim_contrast));
 percentage_correct_theor = zeros(size(stim_contrast));
 dprime_theor = zeros(size(stim_contrast));
-
-<span class="keyword">for</span> i = 1:length(stim_contrast)
+</pre><p>For each stim_contrast, run the experiment AFC_experiment. Here the optimal criterion is expected to be zero as that is where the two distributions will overlap given that their means are +2*c*time_steps and -2*c*time_steps and that they have the same standard deviation.</p><pre class="codeinput"><span class="keyword">for</span> i = 1:length(stim_contrast)
     contrast = stim_contrast(i);
     [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
         AFC_experiment(dur, contrast, var_dist,<span class="keyword">...</span>
@@ -123,57 +120,71 @@ figure(2);
 xlab = <span class="string">'Contrast of stimulus (s)'</span>;
 plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, <span class="keyword">...</span>
     dprime_theor, xlab)
-
-
-<span class="comment">%%%%%%%%</span>
 </pre><pre class="codeoutput">The optimum criterion is: 0
-</pre><img vspace="5" hspace="5" src="sdt_assignment_02.png" alt=""> <h2 id="5">Q1b)</h2><pre class="codeinput">dur = 0.4;
+</pre><img vspace="5" hspace="5" src="sdt_assignment_02.png" alt=""> <p>From the graphs, we can see that the theoretical predictions match the simulations. Specifically we see that the percentage correct increases monotonically as the stimulus contrast increases as this allows the subject to better distinguish the stimulus from noise and hence respond correctly more often. This is the psychometric function and it begins saturating as the stimulus contrast increase does not have as much impact on the performance after a certain threshold.</p><p>d' is the sensitivity of the stimulus and it increases with the contrast increases. This is because the evidence for a given trials comes from a normal distribution of mean 2*c for A and -2*c for B. As contrast of the stimulus increases, the means of A and B increase further apart. Therefore, the two distributions get further and further apart thereby increasing the d'.</p><h2 id="13">Q1b)</h2><p>Setting up the constants: duration of stimulus is now constant at 0.4 s, lets say there are 100 trials per experiment, the contrast is constant at 0.1. The variance of both the distributions is 1, and A and B are equally likely to pA = 0.75</p><pre class="codeinput">dur = 0.4;
 trials_per_experiment = 100;
 contrast = 0.1;
 var_dist = 1;
 pA = 0.75;
-
-[optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
+</pre><p>Running the AFC experiment to compute the optimum criterion, percentage correct simulated, dp simulated. Ignore the theoretical predictions here.</p><pre class="codeinput">[optim_criterion, pcorr_simul_optim, dp_simul_optim, pcorr_theor_optim, dp_theor_optim] = <span class="keyword">...</span>
     AFC_experiment(dur, contrast, var_dist,<span class="keyword">...</span>
     pA, trials_per_experiment, crit);
 disp([<span class="string">'The optimum criterion is: '</span>, num2str(optim_criterion)])
+performance_summary = [optim_criterion, pcorr_simul_optim, dp_simul_optim];
 
-<span class="comment">%figure(3);</span>
-<span class="comment">%xlab = 'Contrast of stimulus (s)';</span>
-<span class="comment">%plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...</span>
-<span class="comment">%    dprime_theor, xlab)</span>
-</pre><pre class="codeoutput">The optimum criterion is: 0
-</pre><h2 id="6">Q2</h2><pre class="codeinput">dur = 2;
+crit = 0;
+[optim_criterion_0, pcorr_simul_0, dp_simul_0, pcorr_theor_0, dp_theor_0] = <span class="keyword">...</span>
+    AFC_experiment(dur, contrast, var_dist,<span class="keyword">...</span>
+    pA, trials_per_experiment, crit);
+performance_summary = [performance_summary; <span class="keyword">...</span>
+    crit, pcorr_simul_0, dp_simul_0];
+
+ColNames = {<span class="string">'Criterion'</span>, <span class="string">'pcorrect_simulation'</span>, <span class="string">'dp_simulation'</span>};
+T = table(performance_summary(:, 1), performance_summary(:, 2), <span class="keyword">...</span>
+    performance_summary(:, 3), <span class="keyword">...</span>
+    <span class="string">'VariableNames'</span>, ColNames);
+disp(T)
+</pre><pre class="codeoutput">The optimum criterion is: -2.7465
+    Criterion    pcorrect_simulation    dp_simulation
+    _________    ___________________    _____________
+
+     -2.7465             79                0.39875   
+           0             65                0.92488   
+
+</pre><p>From the table we can see that the percentage correct is higher in case of the optimal criterion and the simulated dprime is also higher. This is because the optimal criterion is the one that maximizes the performance.</p><h2 id="16">Q2</h2><p>Initiliazing the constants</p><pre class="codeinput">dur = 2;
 trials_per_experiment = 100;
 stim_contrast = [0.1 0.5];
 var_dist = 1;
-crit = <span class="string">'None'</span>;
+crit = 10000;
 pA = 0.5;
-
-lower_bounds = [-1, -5];
+</pre><p>The lower bounds are taken to be -1 (near bound) and -5 (farther bound). Similarly the upper bounds are taken to be 1 (near bound) and 5 (farther bound). The RT experiment is run for each pair of contrast, ub, and lb, and the performance metrics are summarized.</p><pre class="codeinput">lower_bounds = [-1, -5];
 upper_bounds = [1, 5];
-output = zeros(1, 7);
+output = zeros(1, 9);
 <span class="keyword">for</span> contrast = stim_contrast
     <span class="keyword">for</span> lb = lower_bounds
         <span class="keyword">for</span> ub = upper_bounds
             [optim_criterion, Hrate, FArate, rtime] = <span class="keyword">...</span>
                 RT_experiment(dur, contrast, var_dist,<span class="keyword">...</span>
                 pA, trials_per_experiment, crit, lb, ub);
-            <span class="comment">%size(rtime)</span>
-            <span class="comment">%size(mean(rtime, 1)</span>
-            output = [output; contrast, lb, ub, Hrate, FArate, mean(rtime, 1), var(rtime, 1)];
+
+            output = [output; contrast, lb, ub, Hrate, FArate, median(rtime, 1),<span class="keyword">...</span>
+                var(rtime, 1), min(rtime), max(rtime)];
         <span class="keyword">end</span>
     <span class="keyword">end</span>
 <span class="keyword">end</span>
 output = output(2:end, :);
-ColNames = {<span class="string">'Contrast'</span>, <span class="string">'LowerBound'</span>, <span class="string">'UpperBound'</span>, <span class="string">'Hitrate'</span>, <span class="string">'FArate'</span>, <span class="string">'rtime_mean'</span>, <span class="string">'rtime_var'</span>};
+ColNames = {<span class="string">'Contrast'</span>, <span class="string">'LowerBound'</span>, <span class="string">'UpperBound'</span>, <span class="string">'Hitrate'</span>, <span class="string">'FArate'</span>,<span class="keyword">...</span>
+    <span class="string">'rtime_median'</span>, <span class="string">'rtime_var'</span>, <span class="string">'rtime_min'</span>, <span class="string">'rtime_max'</span>};
 T = table(output(:, 1), output(:, 2), output(:, 3), output(:, 4), <span class="keyword">...</span>
-    output(:, 5), output(:, 6), output(:, 7), <span class="string">'VariableNames'</span>, ColNames);
+    output(:, 5), output(:, 6), output(:, 7), output(:, 8), <span class="keyword">...</span>
+    output(:, 9), <span class="string">'VariableNames'</span>, ColNames);
 disp(T)
-
-<span class="keyword">function</span> [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
+</pre><p>From the table we can see that as the contrast of the stimulus increases, the reaction time decreases. The hit rate is determined by the upper bound, the lower is the upper bound and the higher is the contrast, higher is the hit rate. The false alarm rate is determined by the lower bound. The lower is the bound, the further away is the lower bound, the higher is the false alarm rate.</p><p>The symmetric bounds that are closer account for quick response but higher errors. And the symmetric bounds that are farther away account for slower response but have a much better performance with higher hit rate and almost 0 false alarm rate. The asymmetric bounds hamper either the hit rate or the false alarm rate.</p><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><h2 id="20">Simulation for AFC</h2><p>The trials in the experiment are simulated as +1 for stimulus A and -1 for stimulus B, the probabilities of the stimuli are determined by pA, and the length of the experiment is determined by t_length</p><p>The time_steps variable stores the number of time_steps each of 100 ms in which the evidence will be stored. The mean and variance of the new distribution is then just a sum of the old distributions over the time_steps</p><p>The optimum criterion (x) is when the two distributions overlap. This happens when the posterior probabilities of the two distributions are the same i.e. when p(A|x)/p(B|x) = 1. Using Bayesian probabilities, we have:</p><p><img src="sdt_assignment_eq13315470166255836792.png" alt="$$\frac{p(A|x)}{(p(B|x)} = \frac{p(x|A)}{(p(x|B)}\frac{p(A)}{(p(B)}&#xA;$$" style="width:121px;height:26px;"></p><p>Therefore, for optimum criterion, we have:</p><p><img src="sdt_assignment_eq06121127408821892229.png" alt="$$1 = \frac{p(x|A)}{(p(x|B)}\frac{p(A)}{(p(B)} $$" style="width:88px;height:26px;"></p><p><img src="sdt_assignment_eq17967081746198349257.png" alt="$$\frac{p(x|A)}{(p(x|B)} = \frac{p(B)}{(p(A)} $$" style="width:81px;height:26px;"></p><p>Using the definition of Gaussian probabilty, we get: <img src="sdt_assignment_eq08782447002197187271.png" alt="$$\frac{e^{-\frac{(x-\bar{A})^2}{2\sigma_A^2}}}{e^{-\frac{(x-\bar{B})^2}{2\sigma_B^2}}} = \frac{p(B)}{(p(A)} $$" style="width:78px;height:43px;"></p><p>Taking log on both sides: <img src="sdt_assignment_eq10093651352239430298.png" alt="$$-\frac{(x-\bar{A})^2}{2\sigma_A^2} -\frac{(x-\bar{B})^2}{2\sigma_B^2} = log(\frac{p(B)}{(p(A)}) $$" style="width:175px;height:28px;"></p><p>Since the variance of A and B are the same and the mean of B = - mean of A, we can write:</p><p><img src="sdt_assignment_eq11581974344176742571.png" alt="$$ -\frac{(x-\bar{A})^2 +(x+\bar{A})^2}{2\sigma_A^2} = log(\frac{p(B)}{(p(A)}) $$" style="width:172px;height:28px;"></p><p>Solving for x, we get:</p><p><img src="sdt_assignment_eq03534402838875758802.png" alt="$$x =\frac{\sigma_A^2}{2\bar{A}} log(\frac{p(B)}{(p(A)}) $$" style="width:89px;height:27px;"></p><p>This is the optimal criterion. The evidence is computed as a sample from a normal distribution with mean = 2*contrast*time_steps, and var = A_var.</p><p>The response is a matrix that is 1 if evidence is greater than the criterion and -1 if evidence is less than the criterion.</p><p>This is followed by the computation of Hits (H), Misses (M), False alarms (FA) and correct rejections (CR).</p><p>Percentage correct trials in the simulation is the ratio of hits + correct rejections to the total number of trials in the experiment multiplied by 100.</p><p>The dprime from simulation is given as dprime_simul = zH - zFA where z is the z-score associated with the Hitrate and the false alarm rate, respectively.</p><h2 id="38">Theoretical for AFC</h2><p>The theoretical percentage correct is the sum of the product of the cumulative distribution of noise (B) and the probability density function of signal (A). The theoretical dprime is the ratio of the difference between the means of the two distributions and the standard deviation of the distributions.</p><h2 id="39">Function to run AFC_experiment</h2><pre class="codeinput"><span class="keyword">function</span> [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = <span class="keyword">...</span>
     AFC_experiment(dur, contrast, var_dist, pA, t_length, crit)
-</pre><h2 id="7">Simulation</h2><pre class="codeinput">    trials = rand(t_length, 1);
+
+    <span class="comment">% Simulation</span>
+    trials = rand(t_length, 1);
     trials = (trials&gt;(1-pA)) -1 * (trials&lt;=(1-pA));
 
     time_steps = dur * 10;
@@ -183,16 +194,16 @@ disp(T)
     A_var = time_steps * var_dist;
 
     prior_odds = pA/(1-pA);
+    optim_criterion = A_var/(2*A_mean) * log(1/prior_odds);
 
-    optim_criterion = (A_mean + B_mean) / 2;
-    <span class="keyword">if</span> crit == <span class="string">'None'</span>
+    <span class="keyword">if</span> crit == 10000
         crit = optim_criterion;
     <span class="keyword">end</span>
 
     evidence = time_steps * 2 * contrast * trials + <span class="keyword">...</span>
         sqrt(A_var) * trials .* randn(t_length, 1);
-
     response = (evidence &gt; crit) -1 * (evidence &lt;= crit);
+
     H = 0; M = 0; CR = 0; FA = 0;
     <span class="keyword">for</span> i = 1:t_length
         <span class="keyword">if</span> trials(i) == 1
@@ -223,31 +234,36 @@ disp(T)
     zH = -sqrt(2) * erfcinv(2*Hrate);
     zFA = -sqrt(2) * erfcinv(2*FArate);
     dp_simul = zH - zFA;
-</pre><h2 id="8">Theoretical</h2><pre class="codeinput">    resp_range = B_mean-3*B_var: 0.01: A_mean+3*A_var;
+
+    <span class="comment">% Theoretical</span>
+    resp_range = B_mean-3*B_var: 0.01: A_mean+3*A_var;
     B_cdf = normcdf(resp_range, B_mean, sqrt(B_var));
     A_pdf = normpdf(resp_range, A_mean, sqrt(A_var));
     pcorr_theor = sum(A_pdf .* B_cdf);
     dp_theor = (A_mean - B_mean)/sqrt(A_var);
-</pre><pre class="codeinput"><span class="keyword">end</span>
-
-<span class="keyword">function</span> [optim_criterion, Hrate, FArate, rtime] = <span class="keyword">...</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">The optimum criterion is: 0
+</pre><h2 id="40">Simulation for RT</h2><p>The trials in the experiment are simulated as +1 for stimulus A and -1 for stimulus B, the probabilities of the stimuli are determined by pA, and the length of the experiment is determined by t_length. The responses and reaction times are initialized as zeros.</p><p>The time_steps variable stores the number of time_steps each of 100 ms in which the evidence will be stored. The mean and variance of the new distribution is then just a sum of the old distributions over the time_steps</p><p>The optimum criterion (x) is computed as in AFC. For each trial, the log_posteriors is computed from the log_priors which is log(p(A)/p(B)) and updated by the evidence at each time-step given by the log-likelihood ratio:</p><p><img src="sdt_assignment_eq05484157104765357828.png" alt="$$Log\ Likelihood\ ratio = log(\frac{p(evidence|A)}{p(evidence|B)}) $$" style="width:210px;height:26px;"></p><p>The update log posteriors is then: log_posteriors = log_likelihood_ratio + log_priors.</p><p>At time step 0, log_posteriors = log_priors = 0 for the case p(A) = p(B).</p><p>The trial runs until the log_posteriors hit either the upper bound or the lower bound which determines the response as either +1 (A) or -1 (B). The reaction time is the length of log_posteriors - 1.</p><p>The trials and response vectors are then compared to determine the hit rate and the false alarm rate.</p><h2 id="48">Function to run reaction-time experiment</h2><pre class="codeinput"><span class="keyword">function</span> [optim_criterion, Hrate, FArate, rtime] = <span class="keyword">...</span>
     RT_experiment(dur, contrast, var_dist, pA, t_length, crit, lb, ub)
-</pre><pre class="codeinput">    trials = rand(t_length, 1);
+    trials = rand(t_length, 1);
     trials = (trials&gt;(1-pA)) -1 * (trials&lt;=(1-pA));
     response = zeros(t_length, 1);
     rtime = zeros(t_length, 1);
-</pre><h2 id="11">Simulation</h2><pre class="codeinput">    time_steps = dur * 10;
+
+    <span class="comment">% Simulation</span>
+    time_steps = dur * 10;
     B_mean = -2 * time_steps * contrast;
     A_mean = 2 * time_steps * contrast;
     B_var = time_steps * var_dist;
     A_var = time_steps * var_dist;
-    optim_criterion = (A_mean + B_mean) / 2;
-    <span class="keyword">if</span> crit == <span class="string">'None'</span>
+    prior_odds = pA/(1-pA);
+    optim_criterion = A_var/(2*A_mean) * log(1/prior_odds);
+
+    <span class="keyword">if</span> crit == 10000
         crit = optim_criterion;
     <span class="keyword">end</span>
 
-    log_priors = log(pA/(1-pA));
-
+    log_priors = log(prior_odds);
 
     <span class="keyword">for</span> trial_count = 1:t_length
         trial = trials(trial_count);
@@ -261,18 +277,22 @@ disp(T)
                 log(evidence_A/evidence_B);
             log_posteriors = [log_posteriors, updated_posterior];
         <span class="keyword">end</span>
-        response(trial_count) = (log_posteriors(end) &gt;= ub) -1 * (log_posteriors(end) &lt;= ub);
+        response(trial_count) = (log_posteriors(end) &gt;= ub) -1 * (log_posteriors(end) &lt;= lb);
 
         rtime(trial_count) = length(log_posteriors) - 1;
         <span class="keyword">if</span> trial_count == 10
             figure();
-            plot(1:rtime(trial_count) + 1, log_posteriors, <span class="string">'DisplayName'</span>, <span class="string">'rt'</span>)
+            plot(0:rtime(trial_count), log_posteriors, <span class="string">'LineWidth'</span>, 1.5, <span class="keyword">...</span>
+                <span class="string">'DisplayName'</span>, <span class="string">'rt'</span>)
             hold <span class="string">on</span>;
-            plot(xlim, [ub, ub], <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'DisplayName'</span>, <span class="string">'upper bound'</span>)
-            plot(xlim, [lb, lb], <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'DisplayName'</span>, <span class="string">'lower bound'</span>)
+            plot(xlim, [ub, ub], <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'DisplayName'</span>, <span class="keyword">...</span>
+                <span class="string">'upper bound'</span>)
+            plot(xlim, [lb, lb], <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'DisplayName'</span>, <span class="keyword">...</span>
+                <span class="string">'lower bound'</span>)
             xlabel(<span class="string">'Time steps (100 ms)'</span>)
             ylabel(<span class="string">'$$log(\frac{p(A|evidence)}{p(B|evidence)})$$'</span>, <span class="string">'Interpreter'</span>, <span class="string">'latex'</span>)
-            title([<span class="string">'Drift-diffusion model'</span>, <span class="string">'stimulus: '</span>, num2str(trials(trial_count)),<span class="keyword">...</span>
+            title([<span class="string">'Drift-diffusion model: '</span>, <span class="string">'contrast: '</span>, num2str(contrast),<span class="keyword">...</span>
+                <span class="string">' stimulus: '</span>, num2str(trials(trial_count)),<span class="keyword">...</span>
                 <span class="string">', response: '</span>, num2str(response(trial_count))])
             legend()
         <span class="keyword">end</span>
@@ -297,10 +317,20 @@ disp(T)
 
     Hrate = H/(H+M);
     FArate = FA/(FA+CR);
-</pre><img vspace="5" hspace="5" src="sdt_assignment_03.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_04.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_05.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_06.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_07.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_08.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_09.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_10.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">    Contrast    LowerBound    UpperBound    Hitrate     FArate     rtime_median    rtime_var    rtime_min    rtime_max
+    ________    __________    __________    _______    ________    ____________    _________    _________    _________
 
+      0.1           -1            1            0.75     0.23077           7         43.542          2            34   
+      0.1           -1            5         0.68889           0          15          527.9          1           110   
+      0.1           -5            1               1     0.36735          16         578.74          2           111   
+      0.1           -5            5         0.97872           0        54.5         2132.7         17           309   
+      0.5           -1            1         0.90909    0.088889           1         0.2976          1             4   
+      0.5           -1            5         0.91837           0           2         2.9696          1             9   
+      0.5           -5            1               1    0.098039           2         2.1076          1             8   
+      0.5           -5            5               1    0.017544           3           2.78          1            10   
 
-<span class="keyword">function</span> plot_figs(x, y1, y2, y3, y4, xlab)
+</pre><img vspace="5" hspace="5" src="sdt_assignment_03.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_04.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_05.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_06.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_07.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_08.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_09.png" alt=""> <img vspace="5" hspace="5" src="sdt_assignment_10.png" alt=""> <h2 id="49">Function to create plots</h2><pre class="codeinput"><span class="keyword">function</span> plot_figs(x, y1, y2, y3, y4, xlab)
     subplot(2, 2, 1)
     plot(x, y1, <span class="string">'b-o'</span>, <span class="string">'LineWidth'</span>, 2, <span class="keyword">...</span>
         <span class="string">'MarkerSize'</span>, 5)
@@ -327,35 +357,39 @@ disp(T)
     ylabel(<span class="string">"d'"</span>)
     title(<span class="string">"d' theoretical"</span>)
 <span class="keyword">end</span>
-</pre><pre class="codeoutput">    Contrast    LowerBound    UpperBound    Hitrate     FArate     rtime_mean    rtime_var
-    ________    __________    __________    _______    ________    __________    _________
-
-      0.1           -1            1         0.73585     0.14894       8.75        45.347  
-      0.1           -1            5            0.68           0      28.68        870.86  
-      0.1           -5            1               1     0.33962      30.44        914.45  
-      0.1           -5            5               1           0      66.81        1514.3  
-      0.5           -1            1         0.91111    0.090909       1.31        0.3939  
-      0.5           -1            5         0.96226           0       2.41        2.7819  
-      0.5           -5            1         0.98387     0.10526       2.23        2.0771  
-      0.5           -5            5               1           0       3.34        2.9044  
-
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 clear; close all; clc;
 
 %% Q1a)
 %% variable duration and constant contrast
+% Setting up the constants: stimulus_duration varies between 0.1 s to 2 s,
+% lets say there are 10000 trials per experiment, the contrast is given to
+% be 0.2, the variance of both the distributions is 1, and A and B are
+% equally likely to pA = 0.5
 stim_dur = 0.1: 0.1: 2;
 trials_per_experiment = 10000;
 contrast = 0.2;
 var_dist = 1;
-pA = 0.5; 
+pA = 0.5;
+
+%%
+% Next, arrays that will hold simulated percentage correct, simulated
+% dprime, theoretical percentage correct, and theoretical dprime are
+% initialized. The critical value is not given so lets initialize it to
+% None, this will make use of the optimal criterion.
 
 percentage_correct_simul = zeros(size(stim_dur));
 dprime_simul = zeros(size(stim_dur));
 percentage_correct_theor = zeros(size(stim_dur));
 dprime_theor = zeros(size(stim_dur));
-crit = 'None';
+crit = 10000;
+
+%%
+% For each stim_duration, run the experiment AFC_experiment. Here the
+% optimal criterion is expected to be zero as that is where the two
+% distributions will overlap given that their means are +2*c*time_steps and
+% -2*c*time_steps and that they have the same standard deviation.
 for i = 1:length(stim_dur)
     dur = stim_dur(i);
     [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
@@ -375,15 +409,46 @@ xlab = 'Duration of stimulus (s)';
 plot_figs(stim_dur, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
     dprime_theor, xlab)
 
+%%
+% From the graphs, we can see that the theoretical predictions match the
+% simulations. Specifically we see that the percentage correct increases
+% monotonically as the stimulus duration increases as this allows the
+% subject to accumulate more evidence and hence respond correctly more
+% often. This is the psychometric function and it begins saturating as the
+% stimulus duration increase does not have as much impact on the
+% performance after a certain threshold.
+%%
+% d' is the sensitivity of the stimulus and it increases with the duration
+% as the evidence accumulated increases. This is because each evidence
+% comes from a normal distribution of mean 2*c for A and -2*c for B. As
+% duration of the stimulus increases, the timesteps in which the evidence
+% is accumulated increases and the resulting evidence now comes from a
+% normal distribution of mean 2*c*time_steps for A and -2*c*time_steps for
+% B. Therefore, the two distributions get further and further apart thereby
+% increasing the d'.
+
 %% constant duration and variable contrast
+% Setting up the constants: duration of stimulus is now constant at 0.2 s,
+% lets say there are 10000 trials per experiment, the contrast varies
+% between 0.05 and 1. The variance of both the distributions is 1, and A and B are
+% equally likely to pA = 0.5
 dur = 0.2;
 stim_contrast = 0.05: 0.05: 1;
 pA = 0.5;
+%%
+% Next, arrays that will hold simulated percentage correct, simulated
+% dprime, theoretical percentage correct, and theoretical dprime are
+% initialized. The critical value is not given so lets initialize it to
+% None, this will make use of the optimal criterion.
 percentage_correct_simul = zeros(size(stim_contrast));
 dprime_simul = zeros(size(stim_contrast));
 percentage_correct_theor = zeros(size(stim_contrast));
 dprime_theor = zeros(size(stim_contrast));
-
+%%
+% For each stim_contrast, run the experiment AFC_experiment. Here the
+% optimal criterion is expected to be zero as that is where the two
+% distributions will overlap given that their means are +2*c*time_steps and
+% -2*c*time_steps and that they have the same standard deviation.
 for i = 1:length(stim_contrast)
     contrast = stim_contrast(i);
     [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
@@ -402,78 +467,197 @@ figure(2);
 xlab = 'Contrast of stimulus (s)';
 plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
     dprime_theor, xlab)
+%%
+% From the graphs, we can see that the theoretical predictions match the
+% simulations. Specifically we see that the percentage correct increases
+% monotonically as the stimulus contrast increases as this allows the
+% subject to better distinguish the stimulus from noise and hence respond correctly more
+% often. This is the psychometric function and it begins saturating as the
+% stimulus contrast increase does not have as much impact on the
+% performance after a certain threshold.
+%%
+% d' is the sensitivity of the stimulus and it increases with the contrast increases. 
+% This is because the evidence for a given trials
+% comes from a normal distribution of mean 2*c for A and -2*c for B. As
+% contrast of the stimulus increases, the means of A and B increase further apart.
+% Therefore, the two distributions get further and further apart thereby
+% increasing the d'.
 
-
-%%%%%%%%
 %% Q1b)
+% Setting up the constants: duration of stimulus is now constant at 0.4 s,
+% lets say there are 100 trials per experiment, the contrast is constant at
+% 0.1.
+% The variance of both the distributions is 1, and A and B are
+% equally likely to pA = 0.75
 dur = 0.4;
 trials_per_experiment = 100;
 contrast = 0.1;
 var_dist = 1;
 pA = 0.75;
 
-[optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
+%%
+% Running the AFC experiment to compute the optimum criterion, percentage
+% correct simulated, dp simulated. Ignore the theoretical predictions here.
+[optim_criterion, pcorr_simul_optim, dp_simul_optim, pcorr_theor_optim, dp_theor_optim] = ...
     AFC_experiment(dur, contrast, var_dist,...
     pA, trials_per_experiment, crit);
 disp(['The optimum criterion is: ', num2str(optim_criterion)])
+performance_summary = [optim_criterion, pcorr_simul_optim, dp_simul_optim];
 
-%figure(3);
-%xlab = 'Contrast of stimulus (s)';
-%plot_figs(stim_contrast, percentage_correct_simul, dprime_simul, percentage_correct_theor, ...
-%    dprime_theor, xlab)
+crit = 0;
+[optim_criterion_0, pcorr_simul_0, dp_simul_0, pcorr_theor_0, dp_theor_0] = ...
+    AFC_experiment(dur, contrast, var_dist,...
+    pA, trials_per_experiment, crit);
+performance_summary = [performance_summary; ...
+    crit, pcorr_simul_0, dp_simul_0];
+
+ColNames = {'Criterion', 'pcorrect_simulation', 'dp_simulation'};
+T = table(performance_summary(:, 1), performance_summary(:, 2), ...
+    performance_summary(:, 3), ...
+    'VariableNames', ColNames);
+disp(T)
+%%
+% From the table we can see that the percentage correct is higher in case
+% of the optimal criterion and the simulated dprime is also higher. This is
+% because the optimal criterion is the one that maximizes the performance.
 
 %% Q2
+% Initiliazing the constants
 dur = 2;
 trials_per_experiment = 100;
 stim_contrast = [0.1 0.5];
 var_dist = 1;
-crit = 'None';
+crit = 10000;
 pA = 0.5;
 
+%%
+% The lower bounds are taken to be -1 (near bound) and -5 (farther bound).
+% Similarly the upper bounds are taken to be 1 (near bound) and 5 (farther
+% bound). The RT experiment is run for each pair of contrast, ub, and lb,
+% and the performance metrics are summarized.
 lower_bounds = [-1, -5];
 upper_bounds = [1, 5];
-output = zeros(1, 7);
+output = zeros(1, 9);
 for contrast = stim_contrast      
     for lb = lower_bounds
         for ub = upper_bounds
             [optim_criterion, Hrate, FArate, rtime] = ...
                 RT_experiment(dur, contrast, var_dist,...
                 pA, trials_per_experiment, crit, lb, ub);
-            %size(rtime)
-            %size(mean(rtime, 1)
-            output = [output; contrast, lb, ub, Hrate, FArate, mean(rtime, 1), var(rtime, 1)];
+            
+            output = [output; contrast, lb, ub, Hrate, FArate, median(rtime, 1),...
+                var(rtime, 1), min(rtime), max(rtime)];
         end
     end
 end
 output = output(2:end, :);
-ColNames = {'Contrast', 'LowerBound', 'UpperBound', 'Hitrate', 'FArate', 'rtime_mean', 'rtime_var'};
+ColNames = {'Contrast', 'LowerBound', 'UpperBound', 'Hitrate', 'FArate',...
+    'rtime_median', 'rtime_var', 'rtime_min', 'rtime_max'};
 T = table(output(:, 1), output(:, 2), output(:, 3), output(:, 4), ...
-    output(:, 5), output(:, 6), output(:, 7), 'VariableNames', ColNames);
+    output(:, 5), output(:, 6), output(:, 7), output(:, 8), ...
+    output(:, 9), 'VariableNames', ColNames);
 disp(T)
+%%
+% From the table we can see that as the contrast of the stimulus increases,
+% the reaction time decreases. The hit rate is determined by the upper
+% bound, the lower is the upper bound and the higher is the contrast,
+% higher is the hit rate. The false alarm rate is determined by the lower
+% bound. The lower is the bound, the further away is the lower bound, the
+% higher is the false alarm rate.
+%%
+% The symmetric bounds that are closer account for quick response but
+% higher errors. And the symmetric bounds that are farther away account for
+% slower response but have a much better performance with higher hit rate
+% and almost 0 false alarm rate. The asymmetric bounds hamper either the
+% hit rate or the false alarm rate.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Simulation for AFC
+% The trials in the experiment are simulated as +1 for stimulus A and
+% -1 for stimulus B, the probabilities of the stimuli are determined by
+% pA, and the length of the experiment is determined by t_length
+%%
+% The time_steps variable stores the number of time_steps each of 100
+% ms in which the evidence will be stored. The mean and variance of the
+% new distribution is then just a sum of the old distributions over the
+% time_steps
+%%
+% The optimum criterion (x) is when the two distributions overlap. This
+% happens when the posterior probabilities of the two distributions are
+% the same i.e. when p(A|x)/p(B|x) = 1. Using Bayesian probabilities, we
+% have:
+%%
+% $$\frac{p(A|x)}{(p(B|x)} = \frac{p(x|A)}{(p(x|B)}\frac{p(A)}{(p(B)}
+% $$
+%%
+% Therefore, for optimum criterion, we have:
+%%
+% $$1 = \frac{p(x|A)}{(p(x|B)}\frac{p(A)}{(p(B)} $$
+%%
+% $$\frac{p(x|A)}{(p(x|B)} = \frac{p(B)}{(p(A)} $$
+%%
+% Using the definition of Gaussian probabilty, we get:
+% $$\frac{e^{-\frac{(x-\bar{A})^2}{2\sigma_A^2}}}{e^{-\frac{(x-\bar{B})^2}{2\sigma_B^2}}} = \frac{p(B)}{(p(A)} $$
+%%
+% Taking log on both sides:
+% $$-\frac{(x-\bar{A})^2}{2\sigma_A^2} -\frac{(x-\bar{B})^2}{2\sigma_B^2} = log(\frac{p(B)}{(p(A)}) $$
+%%
+% Since the variance of A and B are the same and the mean of B = - mean of
+% A, we can write:
+%%
+% $$ -\frac{(x-\bar{A})^2 +(x+\bar{A})^2}{2\sigma_A^2} = log(\frac{p(B)}{(p(A)}) $$
+%%
+% Solving for x, we get:
+%%
+% $$x =\frac{\sigma_A^2}{2\bar{A}} log(\frac{p(B)}{(p(A)}) $$
+%%
+% This is the optimal criterion. The evidence is computed as a sample from
+% a normal distribution with mean = 2*contrast*time_steps, and var = A_var.
+%%
+% The response is a matrix that is 1 if evidence is greater than the
+% criterion and -1 if evidence is less than the criterion.
+%%
+% This is followed by the computation of Hits (H), Misses (M), False
+% alarms (FA) and correct rejections (CR).
+%%
+% Percentage correct trials in the simulation is the ratio of hits +
+% correct rejections to the total number of trials in the experiment
+% multiplied by 100.
+%%
+% The dprime from simulation is given as dprime_simul = zH - zFA where z is
+% the z-score associated with the Hitrate and the false alarm rate,
+% respectively.
+%% Theoretical for AFC
+% The theoretical percentage correct is the sum of the product of the cumulative
+% distribution of noise (B) and the probability density function of signal
+% (A). The theoretical dprime is the ratio of the difference between the
+% means of the two distributions and the standard deviation of the
+% distributions.
+%% Function to run AFC_experiment
 function [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
     AFC_experiment(dur, contrast, var_dist, pA, t_length, crit)
-    %% Simulation
+    
+    % Simulation
     trials = rand(t_length, 1);
     trials = (trials>(1-pA)) -1 * (trials<=(1-pA));
-
+    
     time_steps = dur * 10;
     B_mean = -2 * time_steps * contrast;
     A_mean = 2 * time_steps * contrast;
     B_var = time_steps * var_dist;
     A_var = time_steps * var_dist;
     
-    prior_odds = pA/(1-pA);
-                                                                                                                            
-    optim_criterion = (A_mean + B_mean) / 2;
-    if crit == 'None'
+    prior_odds = pA/(1-pA);                                                                                                          
+    optim_criterion = A_var/(2*A_mean) * log(1/prior_odds);
+    
+    if crit == 10000
         crit = optim_criterion;
     end
     
     evidence = time_steps * 2 * contrast * trials + ...
         sqrt(A_var) * trials .* randn(t_length, 1);
-
     response = (evidence > crit) -1 * (evidence <= crit);
+    
     H = 0; M = 0; CR = 0; FA = 0;
     for i = 1:t_length
         if trials(i) == 1
@@ -505,7 +689,7 @@ function [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
     zFA = -sqrt(2) * erfcinv(2*FArate);
     dp_simul = zH - zFA;
     
-    %% Theoretical
+    % Theoretical
     resp_range = B_mean-3*B_var: 0.01: A_mean+3*A_var;
     B_cdf = normcdf(resp_range, B_mean, sqrt(B_var));
     A_pdf = normpdf(resp_range, A_mean, sqrt(A_var));
@@ -513,6 +697,37 @@ function [optim_criterion, pcorr_simul, dp_simul, pcorr_theor, dp_theor] = ...
     dp_theor = (A_mean - B_mean)/sqrt(A_var);
 end
 
+%% Simulation for RT
+% The trials in the experiment are simulated as +1 for stimulus A and
+% -1 for stimulus B, the probabilities of the stimuli are determined by
+% pA, and the length of the experiment is determined by t_length.
+% The responses and reaction times are initialized as zeros.
+
+%%
+% The time_steps variable stores the number of time_steps each of 100
+% ms in which the evidence will be stored. The mean and variance of the
+% new distribution is then just a sum of the old distributions over the
+% time_steps
+%%
+% The optimum criterion (x) is computed as in AFC. For each trial, the
+% log_posteriors is computed from the log_priors which is log(p(A)/p(B))
+% and updated by the evidence at each time-step given by the log-likelihood
+% ratio:
+%%
+% $$Log\ Likelihood\ ratio = log(\frac{p(evidence|A)}{p(evidence|B)}) $$
+%%
+% The update log posteriors is then: log_posteriors = log_likelihood_ratio
+% + log_priors.
+%%
+% At time step 0, log_posteriors = log_priors = 0 for the case p(A) = p(B).
+%%
+% The trial runs until the log_posteriors hit either the upper bound or the
+% lower bound which determines the response as either +1 (A) or -1 (B).
+% The reaction time is the length of log_posteriors - 1.
+%%
+% The trials and response vectors are then compared to determine the hit
+% rate and the false alarm rate.
+%% Function to run reaction-time experiment
 function [optim_criterion, Hrate, FArate, rtime] = ...
     RT_experiment(dur, contrast, var_dist, pA, t_length, crit, lb, ub)
     trials = rand(t_length, 1);
@@ -520,19 +735,20 @@ function [optim_criterion, Hrate, FArate, rtime] = ...
     response = zeros(t_length, 1);
     rtime = zeros(t_length, 1);
 
-    %% Simulation
+    % Simulation
     time_steps = dur * 10;
     B_mean = -2 * time_steps * contrast;
     A_mean = 2 * time_steps * contrast;
     B_var = time_steps * var_dist;
     A_var = time_steps * var_dist;
-    optim_criterion = (A_mean + B_mean) / 2;
-    if crit == 'None'
+    prior_odds = pA/(1-pA);                                                                                                          
+    optim_criterion = A_var/(2*A_mean) * log(1/prior_odds);
+    
+    if crit == 10000
         crit = optim_criterion;
     end
     
-    log_priors = log(pA/(1-pA));
-    
+    log_priors = log(prior_odds);
     
     for trial_count = 1:t_length
         trial = trials(trial_count);
@@ -546,18 +762,22 @@ function [optim_criterion, Hrate, FArate, rtime] = ...
                 log(evidence_A/evidence_B);
             log_posteriors = [log_posteriors, updated_posterior];
         end
-        response(trial_count) = (log_posteriors(end) >= ub) -1 * (log_posteriors(end) <= ub);
+        response(trial_count) = (log_posteriors(end) >= ub) -1 * (log_posteriors(end) <= lb);
 
         rtime(trial_count) = length(log_posteriors) - 1;
         if trial_count == 10
             figure();
-            plot(1:rtime(trial_count) + 1, log_posteriors, 'DisplayName', 'rt')
+            plot(0:rtime(trial_count), log_posteriors, 'LineWidth', 1.5, ...
+                'DisplayName', 'rt')
             hold on;
-            plot(xlim, [ub, ub], 'k', 'LineWidth', 2, 'DisplayName', 'upper bound')
-            plot(xlim, [lb, lb], 'k', 'LineWidth', 2, 'DisplayName', 'lower bound')
+            plot(xlim, [ub, ub], 'k', 'LineWidth', 2, 'DisplayName', ...
+                'upper bound')
+            plot(xlim, [lb, lb], 'k', 'LineWidth', 2, 'DisplayName', ...
+                'lower bound')
             xlabel('Time steps (100 ms)')
             ylabel('$$log(\frac{p(A|evidence)}{p(B|evidence)})$$', 'Interpreter', 'latex')
-            title(['Drift-diffusion model', 'stimulus: ', num2str(trials(trial_count)),...
+            title(['Drift-diffusion model: ', 'contrast: ', num2str(contrast),...
+                ' stimulus: ', num2str(trials(trial_count)),...
                 ', response: ', num2str(response(trial_count))])
             legend()
         end
@@ -584,7 +804,7 @@ function [optim_criterion, Hrate, FArate, rtime] = ...
     FArate = FA/(FA+CR);
 end
 
-
+%% Function to create plots
 function plot_figs(x, y1, y2, y3, y4, xlab)
     subplot(2, 2, 1)
     plot(x, y1, 'b-o', 'LineWidth', 2, ...
