@@ -1,0 +1,251 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>attention_assignment</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-11-24"><meta name="DC.source" content="attention_assignment.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1)</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">1)</h2><p>The role of attention is to increase the discriminability of the stimulus and suppress the unwanted noise. Therefore, in terms of spatial frequency, I would expect a broadening of spatial frequency and orientation bandwidths because of attention. This would ensure that the sensitivity of all the spatial frequencies and all orientation bandwidths is increased due to attention. As a result, the performance of the subject would improve for all spatial frequencies and orientation bandwidths. However, this would also imply an increased sensitivity to noise at all spatial frequencies and orientation bandwidths.</p><p>According to this hypothesis, the effect of attention can be modeled as an increase in the Gaussian response curve over all spatial frequencies and orientation bandwidths. This can be modeled using Naka-Rushton functions and their modifications as in (Wang et al., 2017; Jigo and Carrasco, 2020). However, for the sake of this assigment, I have kept the approximation to a Gaussian model that serves the purpose. In fact the cdf of a Gaussian model is a psychometric curve that can model both response gain and/or frequency and/or orientation gains.</p><p>In terms of a psychological experiment, attention can be modeled as a cue. And absense or no attention can be modeled by a neutral cue. At the same time, the location that is uncued will serve as unattended stimulus. Modeling this using a Gaussian for spatial frequency and orientation of the stimulus, would provide following curves in the case that the hypothesis does hold true.</p><pre class="codeinput">mu_sf = 3;
+sigma_sf = 1;
+sf = mu_sf - 0.5 * sigma_sf:0.01:mu_sf+1.5*sigma_sf;
+sens_sf_neutral = normpdf(sf, mu_sf, sigma_sf);
+sens_sf_cued = normpdf(sf, mu_sf, sigma_sf) * 1.1;
+sens_sf_uncued = normpdf(sf, mu_sf, sigma_sf) / 1.1;
+
+ori = -90 : 1: 90;
+mu_ori = 0;
+sigma_ori = 40;
+sens_ori_neutral = normpdf(ori, mu_ori, sigma_ori);
+sens_ori_cued = normpdf(ori, mu_ori, sigma_ori) * 1.2;
+sens_ori_uncued = normpdf(ori, mu_ori, sigma_ori) / 1.2;
+
+fig1 = figure();
+suptitle(sprintf(<span class="string">'Effect of attention on spatial frequency and orientation\n'</span>))
+
+subplot(1, 2, 1)
+plot(sf, sens_sf_neutral, <span class="string">'DisplayName'</span>, <span class="string">'neutral'</span>)
+hold <span class="string">on</span>;
+plot(sf, sens_sf_cued, <span class="string">'DisplayName'</span>, <span class="string">'cued'</span>)
+plot(sf, sens_sf_uncued, <span class="string">'DisplayName'</span>, <span class="string">'uncued'</span>)
+xlabel(<span class="string">'Spatial frequency (cpd)'</span>)
+ylabel(<span class="string">'Sensitivity (AU)'</span>)
+legend();
+
+subplot(1, 2, 2)
+plot(ori, sens_ori_neutral, <span class="string">'DisplayName'</span>, <span class="string">'neutral'</span>)
+hold <span class="string">on</span>;
+plot(ori, sens_ori_cued, <span class="string">'DisplayName'</span>, <span class="string">'cued'</span>)
+plot(ori, sens_ori_uncued, <span class="string">'DisplayName'</span>, <span class="string">'uncued'</span>)
+xlabel(<span class="string">'Orientation (degrees)'</span>)
+ylabel(<span class="string">'Sensitivity (AU)'</span>)
+xlim([-90, 90])
+legend();
+</pre><img vspace="5" hspace="5" src="attention_assignment_01.png" alt=""> <p>However, the role of attention would also depend on whether endogenous or exogenous attention are deployed, the demands of the task, and the nature of the task (Carrasco and Yeshurun, 2009; Barbot and Carrasco, 2017; Jigo and Carrasco, 2020; Dugue et al., 2020). In these and other instances, there are several similarities in behavioral performance for endogenous covert and exogenous covert attention despite quite a few dissimilarities based on task demand. Here, I am assuming that the performance for both endogenous and exogenous would be same or close to similar. An experiment can be run to verify if there are differences in the effect of endogenous vs exogenous attention on spatial frequency and orientation bandwidths.</p><pre class="codeinput"><span class="comment">% b1 = normcdf(sf, mu_sf, sigma_sf);</span>
+<span class="comment">% b2 = normcdf(sf, mu_ori, sigma_ori) * 2;</span>
+<span class="comment">% fig2 = figure();</span>
+<span class="comment">% plot(sf, b1, 'DisplayName', 'a1')</span>
+<span class="comment">% hold on;</span>
+<span class="comment">% plot(sf, b2, 'DisplayName', 'a2')</span>
+<span class="comment">% legend();</span>
+
+<span class="comment">% function df = naka_rushton(d_max, c, n, f, condition)</span>
+<span class="comment">%     if condition == 'neutral'</span>
+<span class="comment">%         c50_f = c50N(f);</span>
+<span class="comment">%     elseif condition == 'cued'</span>
+<span class="comment">%         c50_f = c50A(f);</span>
+<span class="comment">%     end</span>
+<span class="comment">%     df = d_max * (c^n / (c^n + c50_f^n));</span>
+<span class="comment">%</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% function c50_f = c50N(f)</span>
+<span class="comment">%     m = 2;</span>
+<span class="comment">%     f_csf = 1;</span>
+<span class="comment">%     s = 0.5;</span>
+<span class="comment">%     c50_f = 1/(m * f^(f_csf/s) * e^(-f/s));</span>
+<span class="comment">% end</span>
+<span class="comment">%</span>
+<span class="comment">% function c50_f = c50A(f)</span>
+<span class="comment">%     p = 2;</span>
+<span class="comment">%     sigma = 0.5;</span>
+<span class="comment">%     exponent = (f - f_benefit)/sig;</span>
+<span class="comment">%     b = gamma * e^(-exponent^p) + delta;</span>
+<span class="comment">%     c50_f = c50N(f)/b;</span>
+<span class="comment">% end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%% 1)
+% The role of attention is to increase the discriminability of the stimulus
+% and suppress the unwanted noise. Therefore, in terms of spatial
+% frequency, I would expect a broadening of spatial frequency and
+% orientation bandwidths because of attention. This would ensure that the
+% sensitivity of all the spatial frequencies and all orientation bandwidths
+% is increased due to attention. As a result, the performance of the
+% subject would improve for all spatial frequencies and orientation
+% bandwidths. However, this would also imply an increased sensitivity to
+% noise at all spatial frequencies and orientation bandwidths.
+%%
+% According to this hypothesis, the effect of attention can be modeled as
+% an increase in the Gaussian response curve over all spatial frequencies
+% and orientation bandwidths. This can be modeled using Naka-Rushton
+% functions and their modifications as in (Wang et al., 2017; Jigo and
+% Carrasco, 2020). However, for the sake of this assigment, I have kept the
+% approximation to a Gaussian model that serves the purpose. In fact the
+% cdf of a Gaussian model is a psychometric curve that can model both
+% response gain and/or frequency and/or orientation gains.
+%%
+% In terms of a psychological experiment, attention can be modeled as a
+% cue. And absense or no attention can be modeled by a neutral cue. At the
+% same time, the location that is uncued will serve as unattended stimulus.
+% Modeling this using a Gaussian for spatial frequency and orientation of
+% the stimulus, would provide following curves in the case that the
+% hypothesis does hold true.
+%%
+mu_sf = 3;
+sigma_sf = 1;
+sf = mu_sf - 0.5 * sigma_sf:0.01:mu_sf+1.5*sigma_sf;
+sens_sf_neutral = normpdf(sf, mu_sf, sigma_sf);
+sens_sf_cued = normpdf(sf, mu_sf, sigma_sf) * 1.1;
+sens_sf_uncued = normpdf(sf, mu_sf, sigma_sf) / 1.1;
+
+ori = -90 : 1: 90;
+mu_ori = 0;
+sigma_ori = 40;
+sens_ori_neutral = normpdf(ori, mu_ori, sigma_ori);
+sens_ori_cued = normpdf(ori, mu_ori, sigma_ori) * 1.2;
+sens_ori_uncued = normpdf(ori, mu_ori, sigma_ori) / 1.2;
+
+fig1 = figure();
+suptitle(sprintf('Effect of attention on spatial frequency and orientation\n'))
+
+subplot(1, 2, 1)
+plot(sf, sens_sf_neutral, 'DisplayName', 'neutral')
+hold on;
+plot(sf, sens_sf_cued, 'DisplayName', 'cued')
+plot(sf, sens_sf_uncued, 'DisplayName', 'uncued')
+xlabel('Spatial frequency (cpd)')
+ylabel('Sensitivity (AU)')
+legend();
+
+subplot(1, 2, 2)
+plot(ori, sens_ori_neutral, 'DisplayName', 'neutral')
+hold on;
+plot(ori, sens_ori_cued, 'DisplayName', 'cued')
+plot(ori, sens_ori_uncued, 'DisplayName', 'uncued')
+xlabel('Orientation (degrees)')
+ylabel('Sensitivity (AU)')
+xlim([-90, 90])
+legend();
+
+%%
+% However, the role of attention would also depend on whether endogenous or
+% exogenous attention are deployed, the demands of the task, and the nature 
+% of the task (Carrasco and Yeshurun, 2009; Barbot and Carrasco, 2017;
+% Jigo and Carrasco, 2020; Dugue et al., 2020). In these and other
+% instances, there are several similarities in behavioral performance for
+% endogenous covert and exogenous covert attention despite quite a few
+% dissimilarities based on task demand. Here, I am assuming that the
+% performance for both endogenous and exogenous would be same or close to
+% similar. An experiment can be run to verify if there are differences in
+% the effect of endogenous vs exogenous attention on spatial frequency and
+% orientation bandwidths.
+
+
+% b1 = normcdf(sf, mu_sf, sigma_sf);
+% b2 = normcdf(sf, mu_ori, sigma_ori) * 2;
+% fig2 = figure();
+% plot(sf, b1, 'DisplayName', 'a1')
+% hold on;
+% plot(sf, b2, 'DisplayName', 'a2')
+% legend();
+
+% function df = naka_rushton(d_max, c, n, f, condition)
+%     if condition == 'neutral'
+%         c50_f = c50N(f);
+%     elseif condition == 'cued'
+%         c50_f = c50A(f);
+%     end
+%     df = d_max * (c^n / (c^n + c50_f^n));
+%     
+% end
+% 
+% function c50_f = c50N(f)
+%     m = 2;
+%     f_csf = 1;
+%     s = 0.5;
+%     c50_f = 1/(m * f^(f_csf/s) * e^(-f/s));
+% end
+% 
+% function c50_f = c50A(f)
+%     p = 2;
+%     sigma = 0.5;
+%     exponent = (f - f_benefit)/sig;
+%     b = gamma * e^(-exponent^p) + delta;
+%     c50_f = c50N(f)/b;
+% end
+##### SOURCE END #####
+--></body></html>
