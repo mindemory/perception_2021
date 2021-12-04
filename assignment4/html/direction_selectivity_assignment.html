@@ -1,0 +1,275 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>direction_selectivity_assignment</title><meta name="generator" content="MATLAB 9.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-03"><meta name="DC.source" content="direction_selectivity_assignment.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1)</a></li><li><a href="#3">a)</a></li><li><a href="#5">b)</a></li><li><a href="#7">c)</a></li><li><a href="#9">Functions</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">1)</h2><pre class="codeinput">deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100) = 1;
+tau = 25; <span class="comment">% ms</span>
+y1 = output(x, t, deltaT, tau);
+fig1 = figure();
+plot(t, y1, <span class="string">'ro-'</span>);
+xlabel(<span class="string">'Time (ms)'</span>)
+ylabel(<span class="string">'Output'</span>)
+</pre><img vspace="5" hspace="5" src="direction_selectivity_assignment_01.png" alt=""> <h2 id="3">a)</h2><p>Impulse response</p><pre class="codeinput">deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100) = 1;
+taus = [25, 50, 10]; <span class="comment">% ms</span>
+
+fig2 = figure();
+<span class="keyword">for</span> ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = output(x, t, deltaT, tau);
+
+    subplot(1, 3, ll)
+    plot(t, y1, <span class="string">'r-'</span>);
+    hold <span class="string">on</span>;
+
+    t_new = t-100;
+    exponential = exp(-(t_new./tau));
+    plot(exponential, <span class="string">'b'</span>);
+
+    xlabel(<span class="string">'Time (ms)'</span>)
+    ylabel(<span class="string">'Output'</span>)
+    ylim([0, max(y1)])
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="direction_selectivity_assignment_02.png" alt=""> <h2 id="5">b)</h2><p>Step response</p><pre class="codeinput">deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100:1000) = 1;
+taus = [25, 50, 10]; <span class="comment">% ms</span>
+
+fig3 = figure();
+<span class="keyword">for</span> ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = output(x, t, deltaT, tau);
+
+    subplot(1, 3, ll)
+    plot(t, y1, <span class="string">'ro'</span>, <span class="string">'DisplayName'</span>, <span class="string">'step resp'</span>);
+    hold <span class="string">on</span>;
+
+    t_new = t-100;
+    exponential = 1 - exp(-(t_new./tau));
+    plot(exponential, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'DisplayName'</span>, <span class="string">'1 - exp'</span>);
+
+    xlabel(<span class="string">'Time (ms)'</span>)
+    ylabel(<span class="string">'Output'</span>)
+    ylim([0, max(y1)])
+    legend(<span class="string">'Location'</span>, <span class="string">'southeast'</span>)
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="direction_selectivity_assignment_03.png" alt=""> <img vspace="5" hspace="5" src="direction_selectivity_assignment_04.png" alt=""> <h2 id="7">c)</h2><p>Sinusoidal response</p><pre class="codeinput">deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+x = sin(2*pi*t);
+tau = 25; <span class="comment">% ms</span>
+
+fig3 = figure();
+<span class="keyword">for</span> ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = output(x, t, deltaT, tau);
+
+    subplot(1, 3, ll)
+    plot(t, y1, <span class="string">'r-'</span>, <span class="string">'DisplayName'</span>, <span class="string">'step resp'</span>);
+    hold <span class="string">on</span>;
+
+<span class="comment">%     t_new = t-100;</span>
+<span class="comment">%     exponential = 1 - exp(-(t_new./tau));</span>
+<span class="comment">%     plot(exponential, 'b', 'LineWidth', 2, 'DisplayName', '1 - exp');</span>
+<span class="comment">%</span>
+    xlabel(<span class="string">'Time (ms)'</span>)
+    ylabel(<span class="string">'Output'</span>)
+    <span class="comment">%ylim([0, max(y1)])</span>
+    legend(<span class="string">'Location'</span>, <span class="string">'southeast'</span>)
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="direction_selectivity_assignment_05.png" alt=""> <h2 id="9">Functions</h2><pre class="codeinput"><span class="keyword">function</span> y1 = output(x, t, deltaT, tau)
+    y1 = zeros(length(t), 1);
+    <span class="keyword">for</span> tt = 1:length(t) - 1
+        deltaY1 = (deltaT/tau) * (-y1(tt) + x(tt));
+        y1(tt + 1) = y1(tt) + deltaY1;
+        <span class="comment">%y1Save(tt) = y1;</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%% 1)
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100) = 1;
+tau = 25; % ms
+y1 = output(x, t, deltaT, tau);
+fig1 = figure();
+plot(t, y1, 'ro-');
+xlabel('Time (ms)')
+ylabel('Output')
+
+%% a)
+% Impulse response
+%%
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100) = 1;
+taus = [25, 50, 10]; % ms
+
+fig2 = figure();
+for ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = output(x, t, deltaT, tau);
+    
+    subplot(1, 3, ll)
+    plot(t, y1, 'r-');
+    hold on;
+    
+    t_new = t-100;
+    exponential = exp(-(t_new./tau));
+    plot(exponential, 'b');
+    
+    xlabel('Time (ms)')
+    ylabel('Output')
+    ylim([0, max(y1)])
+end
+
+%% b)
+% Step response
+%%
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100:1000) = 1;
+taus = [25, 50, 10]; % ms
+
+fig3 = figure();
+for ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = output(x, t, deltaT, tau);
+    
+    subplot(1, 3, ll)
+    plot(t, y1, 'ro', 'DisplayName', 'step resp');
+    hold on;
+    
+    t_new = t-100;
+    exponential = 1 - exp(-(t_new./tau));
+    plot(exponential, 'b', 'LineWidth', 2, 'DisplayName', '1 - exp');
+    
+    xlabel('Time (ms)')
+    ylabel('Output')
+    ylim([0, max(y1)])
+    legend('Location', 'southeast')
+end
+
+%% c)
+% Sinusoidal response
+%%
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+x = sin(2*pi*t);
+tau = 25; % ms
+
+fig3 = figure();
+for ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = output(x, t, deltaT, tau);
+    
+    subplot(1, 3, ll)
+    plot(t, y1, 'r-', 'DisplayName', 'step resp');
+    hold on;
+    
+%     t_new = t-100;
+%     exponential = 1 - exp(-(t_new./tau));
+%     plot(exponential, 'b', 'LineWidth', 2, 'DisplayName', '1 - exp');
+%     
+    xlabel('Time (ms)')
+    ylabel('Output')
+    %ylim([0, max(y1)])
+    legend('Location', 'southeast')
+end
+
+
+%% Functions
+function y1 = output(x, t, deltaT, tau)
+    y1 = zeros(length(t), 1);
+    for tt = 1:length(t) - 1
+        deltaY1 = (deltaT/tau) * (-y1(tt) + x(tt));
+        y1(tt + 1) = y1(tt) + deltaY1;
+        %y1Save(tt) = y1;
+    end
+end
+##### SOURCE END #####
+--></body></html>
