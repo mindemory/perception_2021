@@ -78,9 +78,15 @@ deltaT = 1; % ms
 duration = 1000; % ms
 t = 0:deltaT:duration-deltaT;
 %x = sin(2*pi*t);
-freqs = [2, 4, 8]; % ms
+freqs = [2, 4, 8]/1000; % ms
 tau = 25;
-
+impulse = zeros(size(t));
+impulse(1) = 1;
+d = output(impulse, t, deltaT, tau);
+amp_y = zeros(length(freqs), length(t));
+phase_y = zeros(length(freqs), length(t));
+% amp_check_y = zeros(length(freqs), length(t));
+% phase_check_y = zeros(length(freqs), length(t));
 fig4 = figure();
 for ll = 1:length(freqs)
     f = freqs(ll);
@@ -90,15 +96,37 @@ for ll = 1:length(freqs)
     subplot(1, 3, ll)
     plot(t, y1, 'r-', 'DisplayName', 'step resp');
     hold on;
-    
-%     t_new = t-100;
-%     exponential = 1 - exp(-(t_new./tau));
-%     plot(exponential, 'b', 'LineWidth', 2, 'DisplayName', '1 - exp');
-%     
     xlabel('Time (ms)')
     ylabel('Output')
     %ylim([0, max(y1)])
     legend('Location', 'southeast')
+    
+    x_fft = fft(x)';
+    d_fft = fft(d);
+    h_fft = 1./(1 + tau .* d_fft);
+    y_fft = h_fft .* x_fft;
+    amp_y(ll, :) = abs(y_fft);
+    phase_y(ll, :) = angle(y_fft);
+    
+%     amp_check_y(ll, :) = abs(x_fft)./(1 + 2 * pi * f);
+%     phase_check_y(ll, :) = angle(x_fft) + pi/2;
+%     figure();
+%     plot(amp_y);
+%     figure();
+%     plot(phase_y);
+    
+end
+
+fig5 = figure();
+for ll = 1:length(freqs)
+    subplot(1, 3, ll)
+    plot(t, amp_y(ll, :))
+end
+
+fig6 = figure();
+for ll = 1:length(freqs)
+    subplot(1, 3, ll)
+    plot(t, phase_y(ll, :))
 end
 
 %% 2)
@@ -110,10 +138,11 @@ x(100) = 1;
 tau = 50; % ms
 [f1, f2] = lp_filter(x, t, deltaT, tau);
 
-fig5 = figure();
+fig7 = figure();
 plot(t, f1, 'DisplayName', 'f_1')
 hold on;
 plot(t, f2, 'DisplayName', 'f_2')
+xlabel('time (ms)')
 legend()
 
 %% 3)
@@ -122,7 +151,8 @@ x_x = -2:deltaX:2;
 x_y = -2:deltaX:2;
 t = 0:deltaT:duration-deltaT;
 x = zeros(length(x_x), length(x_y), length(t));
-x(241, :, 100) = 1;
+x(241, 241, 1) = 1; % Impulse line
+tau = 25;
 [f1, f2] = space_time_filter(x, t, deltaT, tau);
 
 %%
@@ -147,22 +177,46 @@ for tt = 1:length(t)
     evenFast(:, :, tt) = conv2(f1(:, :, tt), evenFilt', 'same');
 end
 %%
-figure();
+fig8 = figure();
 subplot(2,2,1)
 imagesc(squeeze(oddFast(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Odd Fast')
 
 subplot(2,2,2)
 imagesc(squeeze(oddSlow(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Odd Slow')
 
 subplot(2,2,3)
 imagesc(squeeze(evenFast(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Even Fast')
 
 subplot(2,2,4)
 imagesc(squeeze(evenSlow(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Even Slow')
 
 %% b)
 leftEven = oddFast + evenSlow;
@@ -171,36 +225,71 @@ rightEven = -oddFast + evenSlow;
 rightOdd = oddSlow + evenFast;
 
 %%
-figure();
+fig9 = figure();
 subplot(2,2,1)
 imagesc(squeeze(leftEven(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Left Even')
 
 subplot(2,2,2)
 imagesc(squeeze(leftOdd(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Left Odd')
 
 subplot(2,2,3)
 imagesc(squeeze(rightEven(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Right Even')
 
 subplot(2,2,4)
 imagesc(squeeze(rightOdd(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
+title('Right Odd')
+
 
 %% c)
 leftEnergy = leftEven.^2 + leftOdd.^2; 
 rightEnergy = rightEven.^2. + rightOdd.^2;
 
-figure();
+fig10 = figure();
 subplot(2,2,1)
 imagesc(squeeze(leftEnergy(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
 title('Left Energy')
 
 subplot(2,2,2)
 imagesc(squeeze(rightEnergy(:, 241, :))')
 colormap(gray)
+xticks([1, 121, 241, 361, 481])
+xticklabels([-2, -1, 0, 1, 2])
+yticks(0:100:1000)
+xlabel('Visual angle (deg)')
+ylabel('time (ms)')
 title('Right Energy')
 
 %% d)
