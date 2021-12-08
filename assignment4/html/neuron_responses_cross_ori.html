@@ -1,0 +1,184 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>neuron response for cross-orientation</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-07"><meta name="DC.source" content="neuron_responses_cross_ori.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>neuron response for cross-orientation</h1><!--introduction--><p>Repeating the experiment for a cross-orientation experiment where the contrast of the rightward moving grating is varied between 1% and 50% and the contrast of the upward moving grating is kept at 50%. The normalized energies of each of the direction-selective neurons are computed for different contrasts of the rightward moving gratins when the upward moving grating is either present or absent. The rightward-selective neuron responds the strongest when there is only rightward moving grating and the response is dampened by the presence of the upward selective grating. However, the effect of upward grating decreases with an increase in the contrast of the rightward moving grating. A similar pattern is observed for the leftward selective response. However, the scale of the responses for the leftward selective neuron are lower than the rightward selective neuron as the stimulus is not along the preferred direction of the neuron. For the upward selective neuron, the response is higher when the contrast of the rightward moving grating is lower and the responses decrease when the contrast of the rightward moving grating increases. Similar pattern is observed for the downward selective neuron but the responses are lower than the upward selective neuron as the stimulus is not along the preferred direction of the neuron.</p><!--/introduction--><pre class="codeinput"><span class="keyword">function</span> [leftEven, leftOdd, rightEven, rightOdd, leftEnergy, rightEnergy, <span class="keyword">...</span>
+            upEven, upOdd, downEven, downOdd, upEnergy, downEnergy] = <span class="keyword">...</span>
+            neuron_responses_cross_ori(x_x, x_y, t, deltaT, tau, contrast, phase, <span class="keyword">...</span>
+            phase_shift, sf, oddFilt, evenFilt, cross_ori)
+
+    stim = zeros(length(x_x), length(x_y), length(t)); <span class="comment">% Initializing the stimulus</span>
+
+    amp_sinusoid_right = contrast * 1/100; <span class="comment">% amplitude of the rightward moving sinusoid is scaled by the contrast of the stimulus desired</span>
+    amp_sinusoid_up = 0.5; <span class="comment">% amplitude of the upward moving sinusoid is 50%</span>
+    phase_up = phase; <span class="comment">% Initializing phase of upward moving sinusoid</span>
+    phase_right = phase; <span class="comment">% Initializing phase of rightward moving sinusoid</span>
+    <span class="keyword">if</span> cross_ori == 1
+
+        <span class="keyword">for</span> tt = 1:length(t)
+            phase_right = phase_right - phase_shift; <span class="comment">% Shifting the phase at each time-step to move the gratings rightward</span>
+            phase_up = phase_up + phase_shift; <span class="comment">% Shifting the phase at each time-step to move the gratings upward</span>
+            rightwardsinusoid = get_grating(x_x, amp_sinusoid_right, phase_right,<span class="keyword">...</span>
+                sf, <span class="string">"lr"</span>); <span class="comment">% Generating rightward moving 2-D sinusoid at each time-step</span>
+            upwardsinusoid = get_grating(x_x, amp_sinusoid_up, phase_up,<span class="keyword">...</span>
+                sf, <span class="string">"ud"</span>); <span class="comment">% Generating upward moving 2-D sinusoid at each time-step</span>
+            stim(:, :, tt) = rightwardsinusoid + upwardsinusoid; <span class="comment">% Stimulus is the sum of the two gratings</span>
+        <span class="keyword">end</span>
+
+    <span class="keyword">else</span>
+        <span class="keyword">for</span> tt = 1:length(t)
+            phase_right = phase_right - phase_shift; <span class="comment">% Shifting the phase at each time-step to move the gratings rightward</span>
+            rightwardsinusoid = get_grating(x_x, amp_sinusoid_right, phase_right,<span class="keyword">...</span>
+                sf, <span class="string">"lr"</span>); <span class="comment">% Generating rightward moving 2-D sinusoid at each time-step</span>
+            stim(:, :, tt) = rightwardsinusoid; <span class="comment">% Stimulus is the rightward moving grating</span>
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+    [f1, f2] = time_filters(stim, t, deltaT, tau); <span class="comment">% Obtain temporal filters with sinusoid as input</span>
+
+    [oddFastlr, oddSlowlr, evenFastlr, evenSlowlr] = <span class="keyword">...</span>
+        conv_filts(f1, f2, oddFilt, evenFilt); <span class="comment">% convolve temporal and horizontal spatial filters</span>
+    [oddFastud, oddSlowud, evenFastud, evenSlowud] = <span class="keyword">...</span>
+        conv_filts(f1, f2, oddFilt', evenFilt'); <span class="comment">% convolve temporal and vertical spatial filters</span>
+
+    [leftEven, leftOdd, rightEven, rightOdd, leftEnergy, rightEnergy] = <span class="keyword">...</span>
+        motion_energy(oddFastlr, oddSlowlr, evenFastlr, evenSlowlr); <span class="comment">% compute even, odd, energy for leftward and rightward oriented neurons</span>
+    [upEven, upOdd, downEven, downOdd, upEnergy, downEnergy] = <span class="keyword">...</span>
+        motion_energy(oddFastud, oddSlowud, evenFastud, evenSlowud); <span class="comment">% compute even, odd, energy for upward and downward oriented neurons</span>
+
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% neuron response for cross-orientation
+% Repeating the experiment for a cross-orientation experiment where the
+% contrast of the rightward moving grating is varied between 1% and 50% and
+% the contrast of the upward moving grating is kept at 50%. The normalized
+% energies of each of the direction-selective neurons are computed for
+% different contrasts of the rightward moving gratins when the upward
+% moving grating is either present or absent. The rightward-selective
+% neuron responds the strongest when there is only rightward moving grating
+% and the response is dampened by the presence of the upward selective
+% grating. However, the effect of upward grating decreases with an increase
+% in the contrast of the rightward moving grating. A similar pattern is
+% observed for the leftward selective response. However, the scale of the
+% responses for the leftward selective neuron are lower than the rightward
+% selective neuron as the stimulus is not along the preferred direction of
+% the neuron. For the upward selective neuron, the response is higher when
+% the contrast of the rightward moving grating is lower and the responses
+% decrease when the contrast of the rightward moving grating increases.
+% Similar pattern is observed for the downward selective neuron but the
+% responses are lower than the upward selective neuron as the stimulus is
+% not along the preferred direction of the neuron.
+%%
+function [leftEven, leftOdd, rightEven, rightOdd, leftEnergy, rightEnergy, ...
+            upEven, upOdd, downEven, downOdd, upEnergy, downEnergy] = ...
+            neuron_responses_cross_ori(x_x, x_y, t, deltaT, tau, contrast, phase, ...
+            phase_shift, sf, oddFilt, evenFilt, cross_ori)
+    
+    stim = zeros(length(x_x), length(x_y), length(t)); % Initializing the stimulus
+    
+    amp_sinusoid_right = contrast * 1/100; % amplitude of the rightward moving sinusoid is scaled by the contrast of the stimulus desired
+    amp_sinusoid_up = 0.5; % amplitude of the upward moving sinusoid is 50%
+    phase_up = phase; % Initializing phase of upward moving sinusoid
+    phase_right = phase; % Initializing phase of rightward moving sinusoid
+    if cross_ori == 1
+    
+        for tt = 1:length(t)
+            phase_right = phase_right - phase_shift; % Shifting the phase at each time-step to move the gratings rightward
+            phase_up = phase_up + phase_shift; % Shifting the phase at each time-step to move the gratings upward
+            rightwardsinusoid = get_grating(x_x, amp_sinusoid_right, phase_right,...
+                sf, "lr"); % Generating rightward moving 2-D sinusoid at each time-step
+            upwardsinusoid = get_grating(x_x, amp_sinusoid_up, phase_up,...
+                sf, "ud"); % Generating upward moving 2-D sinusoid at each time-step
+            stim(:, :, tt) = rightwardsinusoid + upwardsinusoid; % Stimulus is the sum of the two gratings
+        end
+        
+    else
+        for tt = 1:length(t)
+            phase_right = phase_right - phase_shift; % Shifting the phase at each time-step to move the gratings rightward
+            rightwardsinusoid = get_grating(x_x, amp_sinusoid_right, phase_right,...
+                sf, "lr"); % Generating rightward moving 2-D sinusoid at each time-step
+            stim(:, :, tt) = rightwardsinusoid; % Stimulus is the rightward moving grating
+        end
+
+    end
+    [f1, f2] = time_filters(stim, t, deltaT, tau); % Obtain temporal filters with sinusoid as input
+        
+    [oddFastlr, oddSlowlr, evenFastlr, evenSlowlr] = ...
+        conv_filts(f1, f2, oddFilt, evenFilt); % convolve temporal and horizontal spatial filters
+    [oddFastud, oddSlowud, evenFastud, evenSlowud] = ...
+        conv_filts(f1, f2, oddFilt', evenFilt'); % convolve temporal and vertical spatial filters
+    
+    [leftEven, leftOdd, rightEven, rightOdd, leftEnergy, rightEnergy] = ...
+        motion_energy(oddFastlr, oddSlowlr, evenFastlr, evenSlowlr); % compute even, odd, energy for leftward and rightward oriented neurons
+    [upEven, upOdd, downEven, downOdd, upEnergy, downEnergy] = ...
+        motion_energy(oddFastud, oddSlowud, evenFastud, evenSlowud); % compute even, odd, energy for upward and downward oriented neurons
+    
+end        
+##### SOURCE END #####
+--></body></html>

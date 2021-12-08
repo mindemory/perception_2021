@@ -1,0 +1,219 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Q4b</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-07"><meta name="DC.source" content="Q4b.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">b)</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">b)</h2><p>Repeating the experiment for a cross-orientation experiment where the contrast of the rightward moving grating is varied between 1% and 50% and the contrast of the upward moving grating is kept at 50%. The normalized energies of each of the direction-selective neurons are computed for different contrasts of the rightward moving gratins when the upward moving grating is either present or absent. The rightward-selective neuron responds the strongest when there is only rightward moving grating and the response is dampened by the presence of the upward selective grating. However, the effect of upward grating decreases with an increase in the contrast of the rightward moving grating. A similar pattern is observed for the leftward selective response. However, the scale of the responses for the leftward selective neuron are lower than the rightward selective neuron as the stimulus is not along the preferred direction of the neuron. For the upward selective neuron, the response is higher when the contrast of the rightward moving grating is lower and the responses decrease when the contrast of the rightward moving grating increases. Similar pattern is observed for the downward selective neuron but the responses are lower than the upward selective neuron as the stimulus is not along the preferred direction of the neuron.</p><pre class="codeinput">tic
+deltaX = 1/120; <span class="comment">% spatial sampling rate</span>
+x_x = -2:deltaX:2; <span class="comment">% spatial array along x axis</span>
+x_y = -2:deltaX:2; <span class="comment">% spatial array along y axis</span>
+deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+
+t = 0:deltaT:duration-deltaT; <span class="comment">% time-array</span>
+
+tau = 25; <span class="comment">% ms</span>
+
+phase_shift = 2*pi/125;
+contrasts = [1, 5, 10, 20, 35, 50];
+cross_oris = [0, 1];
+phase = 0; <span class="comment">% initial phase of the stimulus</span>
+sf = 30; <span class="comment">% cycles/pixel</span>
+sig = 0.1; <span class="comment">% standard deviation of the Gaussian (in deg)</span>
+
+[evenFilt, oddFilt] = gabor_filter(x_x, sig, 4); <span class="comment">% computes spatial filters</span>
+
+ori = <span class="string">"lr"</span>; <span class="comment">% for left-right</span>
+
+mean_energies = zeros(length(contrasts), 4, length(cross_oris));
+
+<span class="keyword">for</span> ff = 1:2
+    cross_ori = cross_oris(ff);
+    <span class="keyword">for</span> ii = 1:length(contrasts)
+        contrast = contrasts(ii);
+        [leftEven, leftOdd, rightEven, rightOdd, leftEnergy, rightEnergy, <span class="keyword">...</span>
+                upEven, upOdd, downEven, downOdd, upEnergy, downEnergy] = <span class="keyword">...</span>
+                neuron_responses_cross_ori(x_x, x_y, t, deltaT, tau, contrast, phase, <span class="keyword">...</span>
+                phase_shift, sf, oddFilt, evenFilt, cross_ori);
+        [leftEnergyNorm, rightEnergyNorm, upEnergyNorm, downEnergyNorm] = <span class="keyword">...</span>
+            energy_norm(leftEnergy, rightEnergy, upEnergy, downEnergy);
+        x_y_dim = 241;
+        st_tm = 400; <span class="comment">% ms</span>
+        mean_energies(ii, :, ff) = [mean(leftEnergyNorm(x_y_dim, x_y_dim, st_tm:end)), <span class="keyword">...</span>
+            mean(rightEnergyNorm(x_y_dim, x_y_dim, st_tm:end)), <span class="keyword">...</span>
+            mean(upEnergyNorm(x_y_dim, x_y_dim, st_tm:end)), <span class="keyword">...</span>
+            mean(downEnergyNorm(x_y_dim, x_y_dim, st_tm:end))];
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+toc
+
+plt_titles = [<span class="string">"leftEnergyNorm mean"</span>, <span class="string">"rightEnergyNorm mean"</span>, <span class="keyword">...</span>
+    <span class="string">"upEnergyNorm mean"</span>, <span class="string">"downEnergyNorm mean"</span>];
+
+figure()
+<span class="keyword">for</span> ss = 1:size(mean_energies, 2)
+    subplot(2, 2, ss)
+    plot(contrasts, mean_energies(:, ss, 1), <span class="string">'o-'</span>, <span class="keyword">...</span>
+        <span class="string">'DisplayName'</span>, <span class="string">'right'</span>, <span class="string">'LineWidth'</span>, 2);
+    legend(<span class="string">'location'</span>, <span class="string">'northwest'</span>)
+    hold <span class="string">on</span>;
+    plot(contrasts, mean_energies(:, ss, 2), <span class="string">'o-'</span>, <span class="keyword">...</span>
+        <span class="string">'DisplayName'</span>, <span class="string">'up+right'</span>, <span class="string">'LineWidth'</span>, 2);
+    xlabel(<span class="string">'Contrast of rightward grating'</span>)
+    ylabel(<span class="string">'Normalized Energy'</span>)
+    title(plt_titles(ss))
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Elapsed time is 898.022641 seconds.
+</pre><img vspace="5" hspace="5" src="Q4b_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%% b)
+% Repeating the experiment for a cross-orientation experiment where the
+% contrast of the rightward moving grating is varied between 1% and 50% and
+% the contrast of the upward moving grating is kept at 50%. The normalized
+% energies of each of the direction-selective neurons are computed for
+% different contrasts of the rightward moving gratins when the upward
+% moving grating is either present or absent. The rightward-selective
+% neuron responds the strongest when there is only rightward moving grating
+% and the response is dampened by the presence of the upward selective
+% grating. However, the effect of upward grating decreases with an increase
+% in the contrast of the rightward moving grating. A similar pattern is
+% observed for the leftward selective response. However, the scale of the
+% responses for the leftward selective neuron are lower than the rightward
+% selective neuron as the stimulus is not along the preferred direction of
+% the neuron. For the upward selective neuron, the response is higher when
+% the contrast of the rightward moving grating is lower and the responses
+% decrease when the contrast of the rightward moving grating increases.
+% Similar pattern is observed for the downward selective neuron but the
+% responses are lower than the upward selective neuron as the stimulus is
+% not along the preferred direction of the neuron.
+%%
+tic
+deltaX = 1/120; % spatial sampling rate
+x_x = -2:deltaX:2; % spatial array along x axis
+x_y = -2:deltaX:2; % spatial array along y axis
+deltaT = 1; % ms
+duration = 1000; % ms
+
+t = 0:deltaT:duration-deltaT; % time-array
+
+tau = 25; % ms
+
+phase_shift = 2*pi/125;
+contrasts = [1, 5, 10, 20, 35, 50];
+cross_oris = [0, 1];
+phase = 0; % initial phase of the stimulus
+sf = 30; % cycles/pixel
+sig = 0.1; % standard deviation of the Gaussian (in deg)
+
+[evenFilt, oddFilt] = gabor_filter(x_x, sig, 4); % computes spatial filters
+
+ori = "lr"; % for left-right
+
+mean_energies = zeros(length(contrasts), 4, length(cross_oris));
+
+for ff = 1:2
+    cross_ori = cross_oris(ff);
+    for ii = 1:length(contrasts)
+        contrast = contrasts(ii);
+        [leftEven, leftOdd, rightEven, rightOdd, leftEnergy, rightEnergy, ...
+                upEven, upOdd, downEven, downOdd, upEnergy, downEnergy] = ...
+                neuron_responses_cross_ori(x_x, x_y, t, deltaT, tau, contrast, phase, ...
+                phase_shift, sf, oddFilt, evenFilt, cross_ori);
+        [leftEnergyNorm, rightEnergyNorm, upEnergyNorm, downEnergyNorm] = ...
+            energy_norm(leftEnergy, rightEnergy, upEnergy, downEnergy);
+        x_y_dim = 241;
+        st_tm = 400; % ms
+        mean_energies(ii, :, ff) = [mean(leftEnergyNorm(x_y_dim, x_y_dim, st_tm:end)), ...
+            mean(rightEnergyNorm(x_y_dim, x_y_dim, st_tm:end)), ...
+            mean(upEnergyNorm(x_y_dim, x_y_dim, st_tm:end)), ...
+            mean(downEnergyNorm(x_y_dim, x_y_dim, st_tm:end))];
+    end
+end
+toc
+
+plt_titles = ["leftEnergyNorm mean", "rightEnergyNorm mean", ...
+    "upEnergyNorm mean", "downEnergyNorm mean"];
+
+figure()
+for ss = 1:size(mean_energies, 2)
+    subplot(2, 2, ss)
+    plot(contrasts, mean_energies(:, ss, 1), 'o-', ...
+        'DisplayName', 'right', 'LineWidth', 2);
+    legend('location', 'northwest')
+    hold on;
+    plot(contrasts, mean_energies(:, ss, 2), 'o-', ...
+        'DisplayName', 'up+right', 'LineWidth', 2);
+    xlabel('Contrast of rightward grating')
+    ylabel('Normalized Energy')
+    title(plt_titles(ss))
+end
+
+##### SOURCE END #####
+--></body></html>

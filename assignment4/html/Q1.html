@@ -1,0 +1,399 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Q1</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-07"><meta name="DC.source" content="Q1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#4">a)</a></li><li><a href="#8">b)</a></li><li><a href="#12">c)</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><p>The IIR Filter is defined using an ODE. Solving the ODE provides a solution for the output y given an input x. The iir_filter function is defined here that solves the ODE.</p><pre class="codeinput">tic
+deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100) = 1;
+tau = 25; <span class="comment">% ms</span>
+
+y1 = iir_filter(x, t, deltaT, tau);
+figure();
+plot(t, y1, <span class="string">'ro-'</span>);
+xlabel(<span class="string">'Time (ms)'</span>)
+ylabel(<span class="string">'Output'</span>)
+title(<span class="string">'IIR Filter'</span>)
+</pre><img vspace="5" hspace="5" src="Q1_01.png" alt=""> <h2 id="4">a)</h2><p>Impulse response</p><p>Running the iir_filter for different time-constants and plotting the output along-with an exponential function:</p><pre class="codeinput">deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+<span class="comment">% The impulse at time-step = 100 ms</span>
+x = zeros(size(t));
+x(100) = 1;
+taus = [25, 50, 10]; <span class="comment">% ms</span>
+
+figure();
+<span class="keyword">for</span> ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = iir_filter(x, t, deltaT, tau);
+
+    subplot(3, 1, ll)
+    plot(t, y1, <span class="string">'r-'</span>);
+    hold <span class="string">on</span>;
+
+    exponential = exp(-(t./tau)); <span class="comment">% Exponential function</span>
+    plot(exponential, <span class="string">'b'</span>);
+
+    xlabel(<span class="string">'Time (ms)'</span>)
+    ylabel(<span class="string">'Output'</span>)
+    ylim([0, max(y1)])
+    title([<span class="string">'IIR impulse response, tau = '</span>, num2str(tau)])
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="Q1_02.png" alt=""> <p>The exponential function <img src="Q1_eq02318375934150743912.png" alt="$$e^{-t/\tau} $$" style="width:22px;height:11px;"> seems to fit the output. However, it is translated along x-direction and can be re-adjusted to account for the position of the impulse. This suggests that the solution of the ODE is of the form <img src="Q1_eq02318375934150743912.png" alt="$$e^{-t/\tau} $$" style="width:22px;height:11px;"> which is trivial.</p><h2 id="8">b)</h2><p>Step response</p><p>Here I am using a trivial step function where the output of the function is 0 and becomes 1 after a certain time-step. For consistency, the change is kept at 100 ms.</p><pre class="codeinput">deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+<span class="comment">% Step function at time-step = 100 ms</span>
+x = zeros(size(t));
+x(100:1000) = 1;
+taus = [25, 50, 10]; <span class="comment">% ms</span>
+
+figure();
+<span class="keyword">for</span> ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = iir_filter(x, t, deltaT, tau);
+
+    subplot(1, 3, ll)
+    plot(t, y1, <span class="string">'ro'</span>, <span class="string">'DisplayName'</span>, <span class="string">'step resp'</span>);
+    hold <span class="string">on</span>;
+
+    t_new = t-100; <span class="comment">% translating time-axis to account for the position of step function start</span>
+    exponential = 1 - exp(-(t_new./tau)); <span class="comment">% Fitting 1 - exp</span>
+    plot(exponential, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2, <span class="string">'DisplayName'</span>, <span class="string">'1 - exp'</span>);
+
+    xlabel(<span class="string">'Time (ms)'</span>)
+    ylabel(<span class="string">'Output'</span>)
+    ylim([0, max(y1)])
+    legend(<span class="string">'Location'</span>, <span class="string">'southeast'</span>)
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="Q1_03.png" alt=""> <p>From the graphs, we can see that the output of the IIR filter to the step response is indeed of the form <img src="Q1_eq03070252511548060749.png" alt="$$1 - e^{-t/\tau} $$" style="width:40px;height:11px;"></p><h2 id="12">c)</h2><p>Sinusoidal response</p><p>Passing a sinusoid through an IIR filter returns a sinusoid of the same frequency since this is a linear system. The amplitude and phase of the output can be computed from the fft of the ODE. The ODE for the IIR filter is:</p><p><img src="Q1_eq01528286777933466578.png" alt="$$\tau \frac{dy(t)}{dt} = -y(t) + x(t) $$" style="width:106px;height:24px;"></p><p>Computing fft on both sides of the equation, we get:</p><p><img src="Q1_eq16607919891842227768.png" alt="$$\tau \hat{d}(\omega)\hat{y}(\omega) = -\hat{y}(\omega) + \hat{x}(\omega) $$" style="width:129px;height:14px;"></p><p>Solving for <img src="Q1_eq00738881173453683554.png" alt="$$\hat{y}(\omega) $$" style="width:21px;height:11px;"> gives:</p><p><img src="Q1_eq10930065546880383573.png" alt="$$\hat{y}(\omega) = \frac{\hat{x}(\omega)}{1 + \tau \hat{d}(\omega)} $$" style="width:84px;height:28px;"></p><p>Let</p><p><img src="Q1_eq09122516188568237948.png" alt="$$\hat{h}(\omega) = \frac{1}{1 + \tau \hat{d}(\omega)} $$" style="width:85px;height:27px;"></p><p>where <img src="Q1_eq01319332348582007733.png" alt="$$\hat{h}(\omega) $$" style="width:21px;height:14px;"> is the effective frequencye response of the linear system. Therefore,</p><p><img src="Q1_eq02896453642037941020.png" alt="$$\hat{y}(\omega) = \hat{h}(\omega) \hat{x}(\omega) $$" style="width:80px;height:14px;"></p><p>The amplitude and phase can then be computed using the equation:</p><p><img src="Q1_eq15220132736377599080.png" alt="$$amp[\hat{y}(\omega)] = amp[\hat{h}(\omega)]\times amp[\hat{x}(\omega)]&#xA;$$" style="width:174px;height:14px;"></p><p><img src="Q1_eq16473397731891389306.png" alt="$$\phi [\hat{y}(\omega)] = \phi [\hat{h}(\omega)] + \phi [\hat{x}(\omega)]&#xA;$$" style="width:131px;height:14px;"></p><pre class="codeinput">deltaT = 1; <span class="comment">% ms</span>
+duration = 1000; <span class="comment">% ms</span>
+t = 0:deltaT:duration-deltaT;
+freqs = [2, 10, 40]; <span class="comment">%/1000;</span>
+tau = 25;
+
+<span class="comment">% Computing impulse and impulse-response function</span>
+impulse = zeros(size(t));
+impulse(1) = 1;
+d = iir_filter(impulse, t, deltaT, tau);
+
+<span class="comment">% Initializing amplitude and phase arrays</span>
+amp_y = zeros(length(freqs), length(t));
+phase_y = zeros(length(freqs), length(t));
+sub_plot_inds = 1;
+
+figure();
+<span class="keyword">for</span> ll = 1:length(freqs)
+    f = freqs(ll)/1000;
+    x = sin(2*pi*f*t); <span class="comment">% Computing sinusoid input</span>
+    y1 = iir_filter(x, t, deltaT, tau); <span class="comment">% Output of sinusoid input</span>
+
+    subplot(3, 1, ll)
+    plot(t, y1, <span class="string">'DisplayName'</span>, <span class="string">'Output'</span>);
+    hold <span class="string">on</span>;
+    plot(t, x, <span class="string">'DisplayName'</span>, <span class="string">'Input'</span>);
+    xlabel(<span class="string">'Time (ms)'</span>)
+    ylabel(<span class="string">'Amplitude'</span>)
+    legend(<span class="string">'Location'</span>, <span class="string">'northeastoutside'</span>)
+
+    x_fft = fft(x)'; <span class="comment">% fft of input</span>
+    d_fft = fft(d); <span class="comment">% fft of impulse-response</span>
+    h_fft = 1./(1 + tau .* d_fft); <span class="comment">% effective frequency response of IIR</span>
+
+    y_fft = h_fft .* x_fft; <span class="comment">% Output sinusoid</span>
+    y_fft_shift = fftshift(y_fft);
+    amp_y(ll, :) = abs(y_fft_shift); <span class="comment">%/tau^2; % Computed amplitude</span>
+    phase_y(ll, :) = angle(y_fft_shift); <span class="comment">% Computed phase</span>
+<span class="keyword">end</span>
+
+freqHz = (0:1:length(amp_y)/2)/1000;
+figure();
+<span class="keyword">for</span> ll = 1:length(freqs)
+    subplot(3, 1, ll)
+    plot(freqHz, amp_y(ll, length(amp_y)/2:end)) <span class="comment">% Plotting amplitude of output for different frequencies</span>
+    xlabel(<span class="string">'Frequency'</span>)
+    ylabel(<span class="string">'Amplitude'</span>)
+    title(<span class="string">'Amplitude of output for sinusoid'</span>)
+<span class="keyword">end</span>
+
+figure();
+<span class="keyword">for</span> ll = 1:length(freqs)
+    subplot(3, 1, ll)
+    plot(freqHz, phase_y(ll, length(amp_y)/2:end)) <span class="comment">% Plotting phase of output for different frequencies</span>
+    xlabel(<span class="string">'Frequency'</span>)
+    ylabel(<span class="string">'Phase'</span>)
+    title(<span class="string">'Phase of output for sinusoid'</span>)
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="Q1_04.png" alt=""> <img vspace="5" hspace="5" src="Q1_05.png" alt=""> <img vspace="5" hspace="5" src="Q1_06.png" alt=""> <p>The output of the IIR filter for the sinusoid is also a sinusoid of the same frequency. However, the amplitude of the resulting sinusoid is scaled down. Additionally, the output sinusoid is also shifted by a certain phase.</p><pre class="codeinput">toc
+</pre><pre class="codeoutput">Elapsed time is 4.654707 seconds.
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%%
+% The IIR Filter is defined using an ODE. Solving the ODE provides a
+% solution for the output y given an input x. The iir_filter function is
+% defined here that solves the ODE.
+%%
+tic
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+x = zeros(size(t));
+x(100) = 1;
+tau = 25; % ms
+
+y1 = iir_filter(x, t, deltaT, tau);
+figure();
+plot(t, y1, 'ro-');
+xlabel('Time (ms)')
+ylabel('Output')
+title('IIR Filter')
+
+%% a)
+% Impulse response
+%%
+% Running the iir_filter for different time-constants and plotting the
+% output along-with an exponential function:
+%%
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+% The impulse at time-step = 100 ms
+x = zeros(size(t));
+x(100) = 1;
+taus = [25, 50, 10]; % ms
+
+figure();
+for ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = iir_filter(x, t, deltaT, tau);
+    
+    subplot(3, 1, ll)
+    plot(t, y1, 'r-');
+    hold on;
+    
+    exponential = exp(-(t./tau)); % Exponential function
+    plot(exponential, 'b');
+    
+    xlabel('Time (ms)')
+    ylabel('Output')
+    ylim([0, max(y1)])
+    title(['IIR impulse response, tau = ', num2str(tau)])
+end
+
+%%
+% The exponential function $$e^{-t/\tau} $$ seems to fit the output.
+% However, it is translated along x-direction and can be re-adjusted to account
+% for the position of the impulse. This suggests that the solution of the
+% ODE is of the form $$e^{-t/\tau} $$ which is trivial.
+
+%% b)
+% Step response
+%%
+% Here I am using a trivial step function where the output of the function is 0 and
+% becomes 1 after a certain time-step. For consistency, the change is kept
+% at 100 ms.
+%%
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+% Step function at time-step = 100 ms
+x = zeros(size(t));
+x(100:1000) = 1;
+taus = [25, 50, 10]; % ms
+
+figure();
+for ll = 1:length(taus)
+    tau = taus(ll);
+    y1 = iir_filter(x, t, deltaT, tau);
+    
+    subplot(1, 3, ll)
+    plot(t, y1, 'ro', 'DisplayName', 'step resp');
+    hold on;
+    
+    t_new = t-100; % translating time-axis to account for the position of step function start
+    exponential = 1 - exp(-(t_new./tau)); % Fitting 1 - exp
+    plot(exponential, 'b', 'LineWidth', 2, 'DisplayName', '1 - exp');
+    
+    xlabel('Time (ms)')
+    ylabel('Output')
+    ylim([0, max(y1)])
+    legend('Location', 'southeast')
+end
+
+%%
+% From the graphs, we can see that the output of the IIR filter to the step
+% response is indeed of the form $$1 - e^{-t/\tau} $$
+
+%% c)
+% Sinusoidal response
+%%
+% Passing a sinusoid through an IIR filter returns a sinusoid of the same
+% frequency since this is a linear system. The amplitude and phase of the
+% output can be computed from the fft of the ODE. The ODE for the IIR
+% filter is:
+%%
+% $$\tau \frac{dy(t)}{dt} = -y(t) + x(t) $$
+%%
+% Computing fft on both sides of the equation, we get:
+%%
+% $$\tau \hat{d}(\omega)\hat{y}(\omega) = -\hat{y}(\omega) + \hat{x}(\omega) $$
+%%
+% Solving for $$\hat{y}(\omega) $$ gives:
+%%
+% $$\hat{y}(\omega) = \frac{\hat{x}(\omega)}{1 + \tau \hat{d}(\omega)} $$
+%%
+% Let 
+%%
+% $$\hat{h}(\omega) = \frac{1}{1 + \tau \hat{d}(\omega)} $$
+%%
+% where $$\hat{h}(\omega) $$ is the effective frequencye response of the
+% linear system. Therefore,
+%%
+% $$\hat{y}(\omega) = \hat{h}(\omega) \hat{x}(\omega) $$
+%%
+% The amplitude and phase can then be computed using the equation:
+%%
+% $$amp[\hat{y}(\omega)] = amp[\hat{h}(\omega)]\times amp[\hat{x}(\omega)]
+% $$
+%%
+% $$\phi [\hat{y}(\omega)] = \phi [\hat{h}(\omega)] + \phi [\hat{x}(\omega)]
+% $$
+
+%%
+deltaT = 1; % ms
+duration = 1000; % ms
+t = 0:deltaT:duration-deltaT;
+freqs = [2, 10, 40]; %/1000; 
+tau = 25;
+
+% Computing impulse and impulse-response function
+impulse = zeros(size(t));
+impulse(1) = 1;
+d = iir_filter(impulse, t, deltaT, tau);
+
+% Initializing amplitude and phase arrays
+amp_y = zeros(length(freqs), length(t));
+phase_y = zeros(length(freqs), length(t));
+sub_plot_inds = 1;
+
+figure();
+for ll = 1:length(freqs)
+    f = freqs(ll)/1000;
+    x = sin(2*pi*f*t); % Computing sinusoid input
+    y1 = iir_filter(x, t, deltaT, tau); % Output of sinusoid input
+    
+    subplot(3, 1, ll)
+    plot(t, y1, 'DisplayName', 'Output');
+    hold on;
+    plot(t, x, 'DisplayName', 'Input');
+    xlabel('Time (ms)')
+    ylabel('Amplitude')
+    legend('Location', 'northeastoutside')
+    
+    x_fft = fft(x)'; % fft of input
+    d_fft = fft(d); % fft of impulse-response
+    h_fft = 1./(1 + tau .* d_fft); % effective frequency response of IIR
+    
+    y_fft = h_fft .* x_fft; % Output sinusoid
+    y_fft_shift = fftshift(y_fft);
+    amp_y(ll, :) = abs(y_fft_shift); %/tau^2; % Computed amplitude
+    phase_y(ll, :) = angle(y_fft_shift); % Computed phase
+end
+
+freqHz = (0:1:length(amp_y)/2)/1000;
+figure();
+for ll = 1:length(freqs)
+    subplot(3, 1, ll)
+    plot(freqHz, amp_y(ll, length(amp_y)/2:end)) % Plotting amplitude of output for different frequencies
+    xlabel('Frequency')
+    ylabel('Amplitude')
+    title('Amplitude of output for sinusoid')
+end
+
+figure();
+for ll = 1:length(freqs)
+    subplot(3, 1, ll)
+    plot(freqHz, phase_y(ll, length(amp_y)/2:end)) % Plotting phase of output for different frequencies
+    xlabel('Frequency')
+    ylabel('Phase')
+    title('Phase of output for sinusoid')
+end
+
+%%
+% The output of the IIR filter for the sinusoid is also a sinusoid of the
+% same frequency. However, the amplitude of the resulting sinusoid is
+% scaled down. Additionally, the output sinusoid is also shifted by a
+% certain phase.
+
+toc
+##### SOURCE END #####
+--></body></html>
