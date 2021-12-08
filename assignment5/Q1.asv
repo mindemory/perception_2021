@@ -91,16 +91,3 @@ clear; close all; clc;
 % $$Var(D) = 0.25\times 4+ 0.25\times 1 $$
 %%
 % Therefore,
-%%
-% $$Var(D) = 1+ 0.25 $$
-%%
-% Therefore,
-%%
-% $$Var(D) = 1.25 $$
-%%
-% The difference between the variance of the optimal estimator and this estimator is
-% 1.25 - 0.8 = 0.45
-%% d)
-% As can be seen, the "average cue" has a higher variance than the second
-% cue. Therefore, David would be better off selecting just the second cue
-% and ignoring the first cue instead of averaging the two cues.

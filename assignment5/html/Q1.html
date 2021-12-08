@@ -1,0 +1,180 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Q1</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-08"><meta name="DC.source" content="Q1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">a)</a></li><li><a href="#3">b)</a></li><li><a href="#34">c)</a></li><li><a href="#45">d)</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">a)</h2><p>There are two depth cues for the distance to the beach. Both of the cues are independent Gaussian random variables. These are unbiased cues implies that the expected value of the cue is equal to the actual value of the depth.</p><h2 id="3">b)</h2><p>Let the depth estimate due to the first cue be <img src="Q1_eq15433551847698561844.png" alt="$$D_1 $$" style="width:12px;height:10px;"> and the depth estimate due to the second cue be <img src="Q1_eq18377927339998825960.png" alt="$$D_2 $$" style="width:13px;height:10px;">. Let the weightage given to the first cue be w. Therefore, the weightage given to the second cue will be 1-w. Hence, the combined estimate of depth becomes:</p><p><img src="Q1_eq07499030607723485468.png" alt="$$D = wD_1 + (1 - w)D_2 $$" style="width:108px;height:11px;"></p><p>Therefore, the variance of the estimate will be:</p><p><img src="Q1_eq01931559620914152841.png" alt="$$Var(D) = Var(wD_1 + (1 - w)D_2) = Var(wD_1)+ Var((1 - w)D_2) $$" style="width:320px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq00909571805954422467.png" alt="$$Var(D) = w^2 Var(D_1)+ (1 - w)^2 Var(D_2) $$" style="width:201px;height:13px;"></p><p>An optimal observer would try to minimize the resulting estimate of the variance of depth. Therefore, the goal of the optimal observer would be to make the derivative of Var(D) = 0.</p><p><img src="Q1_eq04648203885679161264.png" alt="$$\frac{d Var(D)}{dw} = 2w Var(D_1)- 2(1 - w) Var(D_2) = 0$$" style="width:232px;height:24px;"></p><p>Solving for w:</p><p><img src="Q1_eq15751585569123949948.png" alt="$$w Var(D_1)- (1 - w) Var(D_2) = 0 $$" style="width:161px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq07431139695421236654.png" alt="$$w Var(D_1)- Var(D_2) + w Var(D_2) = 0 $$" style="width:189px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq03676823986917439769.png" alt="$$w (Var(D_1) + Var(D_2)) = Var(D_2) $$" style="width:170px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq14153363250354293715.png" alt="$$w = \frac{Var(D_2)}{Var(D_1) + Var(D_2)} $$" style="width:122px;height:26px;"></p><p>We can check by taking the second-derivative of V that this is indeed the w that minimizes the variance of the estimate.</p><p>The given variances of the two cues are:</p><p><img src="Q1_eq10163328889128321095.png" alt="$$Var(D_1) = 4, Var(D_2) = 1 $$" style="width:128px;height:11px;"></p><p>Substituting back into the formula for w, we get:</p><p><img src="Q1_eq04611171821976864305.png" alt="$$w = \frac{1}{4 + 1} = \frac{1}{5} = 0.2 $$" style="width:101px;height:24px;"></p><p>Also,</p><p><img src="Q1_eq01149504549044343558.png" alt="$$1 - w = 1 - \frac{1}{5} = \frac{4}{5} = 0.8 $$" style="width:120px;height:23px;"></p><p>Therefore, an optimal observer would give a weight of 0.2 to the first cue and a weight of 0.8 to the second cue. Plugging the weights back into the formula for computing the variance of the output, we get:</p><p><img src="Q1_eq09935731419514527650.png" alt="$$Var(D) = 0.2^2\times 4+ 0.8^2\times 1 $$" style="width:140px;height:13px;"></p><p>Therefore,</p><p><img src="Q1_eq06316216047289409639.png" alt="$$Var(D) = 0.04\times 4+ 0.64\times 1 $$" style="width:142px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq15913355926182409086.png" alt="$$Var(D) = 0.16+ 0.64 $$" style="width:105px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq01716261157820054986.png" alt="$$Var(D) = 0.80 $$" style="width:72px;height:11px;"></p><h2 id="34">c)</h2><p>If, instead, equal weigths were given to the two cues, then we have:</p><p><img src="Q1_eq14970610262266998747.png" alt="$$w = 1 - w = 0.5 $$" style="width:78px;height:8px;"></p><p>Therefore, the estimates of the variance of the depth now becomes:</p><p><img src="Q1_eq01663478949575235275.png" alt="$$Var(D) = 0.5^2\times 4+ 0.5^2\times 1 $$" style="width:140px;height:13px;"></p><p>Therefore,</p><p><img src="Q1_eq04956034014628707381.png" alt="$$Var(D) = 0.25\times 4+ 0.25\times 1 $$" style="width:142px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq11624082216750942927.png" alt="$$Var(D) = 1+ 0.25 $$" style="width:90px;height:11px;"></p><p>Therefore,</p><p><img src="Q1_eq15268183273984187283.png" alt="$$Var(D) = 1.25 $$" style="width:71px;height:11px;"></p><p>The difference between the variance of the optimal estimator and this estimator is 1.25 - 0.8 = 0.45</p><h2 id="45">d)</h2><p>As can be seen, the "average cue" has a higher variance than the second cue. Therefore, David would be better off selecting just the second cue and ignoring the first cue instead of averaging the two cues.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%% a)
+% There are two depth cues for the distance to the beach. Both of the cues
+% are independent Gaussian random variables. These are unbiased cues
+% implies that the expected value of the cue is equal to the actual value
+% of the depth.
+
+%% b)
+% Let the depth estimate due to the first cue be $$D_1 $$ and the depth
+% estimate due to the second cue be $$D_2 $$. Let the weightage given to
+% the first cue be w. Therefore, the weightage given to the second cue will
+% be 1-w. Hence, the combined estimate of depth becomes:
+%%
+% $$D = wD_1 + (1 - w)D_2 $$
+%%
+% Therefore, the variance of the estimate will be:
+%%
+% $$Var(D) = Var(wD_1 + (1 - w)D_2) = Var(wD_1)+ Var((1 - w)D_2) $$
+%%
+% Therefore,
+%%
+% $$Var(D) = w^2 Var(D_1)+ (1 - w)^2 Var(D_2) $$
+%%
+% An optimal observer would try to minimize the resulting estimate of the
+% variance of depth. Therefore, the goal of the optimal observer would be
+% to make the derivative of Var(D) = 0.
+%%
+% $$\frac{d Var(D)}{dw} = 2w Var(D_1)- 2(1 - w) Var(D_2) = 0$$
+%%
+% Solving for w:
+%%
+% $$w Var(D_1)- (1 - w) Var(D_2) = 0 $$
+%%
+% Therefore,
+%%
+% $$w Var(D_1)- Var(D_2) + w Var(D_2) = 0 $$
+%%
+% Therefore,
+%%
+% $$w (Var(D_1) + Var(D_2)) = Var(D_2) $$
+%%
+% Therefore,
+%%
+% $$w = \frac{Var(D_2)}{Var(D_1) + Var(D_2)} $$
+%%
+% We can check by taking the second-derivative of V that this is indeed the
+% w that minimizes the variance of the estimate.
+%%
+% The given variances of the two cues are:
+%%
+% $$Var(D_1) = 4, Var(D_2) = 1 $$
+%%
+% Substituting back into the formula for w, we get:
+%%
+% $$w = \frac{1}{4 + 1} = \frac{1}{5} = 0.2 $$
+%%
+% Also,
+%%
+% $$1 - w = 1 - \frac{1}{5} = \frac{4}{5} = 0.8 $$
+%%
+% Therefore, an optimal observer would give a weight of 0.2 to the first
+% cue and a weight of 0.8 to the second cue. Plugging the weights back into
+% the formula for computing the variance of the output, we get:
+%%
+% $$Var(D) = 0.2^2\times 4+ 0.8^2\times 1 $$
+%%
+% Therefore,
+%%
+% $$Var(D) = 0.04\times 4+ 0.64\times 1 $$
+%%
+% Therefore,
+%%
+% $$Var(D) = 0.16+ 0.64 $$
+%%
+% Therefore,
+%%
+% $$Var(D) = 0.80 $$
+
+%% c)
+% If, instead, equal weigths were given to the two cues, then we have:
+%%
+% $$w = 1 - w = 0.5 $$
+%%
+% Therefore, the estimates of the variance of the depth now becomes:
+%%
+% $$Var(D) = 0.5^2\times 4+ 0.5^2\times 1 $$
+%%
+% Therefore,
+%%
+% $$Var(D) = 0.25\times 4+ 0.25\times 1 $$
+%%
+% Therefore,
+%%
+% $$Var(D) = 1+ 0.25 $$
+%%
+% Therefore,
+%%
+% $$Var(D) = 1.25 $$
+%%
+% The difference between the variance of the optimal estimator and this estimator is
+% 1.25 - 0.8 = 0.45
+%% d)
+% As can be seen, the "average cue" has a higher variance than the second
+% cue. Therefore, David would be better off selecting just the second cue
+% and ignoring the first cue instead of averaging the two cues.
+##### SOURCE END #####
+--></body></html>
