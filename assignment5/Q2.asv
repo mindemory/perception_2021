@@ -88,7 +88,7 @@ prob_correct = count_correct/trials
 % computed by checking if the radial estimate of each of these estimates
 % from the center of the target circle is within radius of 1. The
 % probability correct is then the ratio of the count of the correct
-% estimates and the total number of trials.
+% estimates and the total number o
 %%
 % 
 w = var2/(var1 + var2);
@@ -109,7 +109,3 @@ axis equal
 radial_distance = sqrt((X - x_center).^2 + (Y - y_center).^2);
 count_correct = sum(radial_distance(radial_distance <= target_radius));
 prob_correct = count_correct/trials
-
-%% 
-% From the simulation, we see that weighing the two cues optimally would
-% increase the probability of Michael hitting the target correctly.

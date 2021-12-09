@@ -1,0 +1,243 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Q2</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-09"><meta name="DC.source" content="Q2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#4">a)</a></li><li><a href="#9">b)</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><p>This problem extends problem 1 to a 2-dimensional case. The target is a circle of radius = 1. There are two cues both of which are bivariate Gaussians with different variances. Since these are unbiased cues, their mean estimates are the actual position of the target center. The task here is to construct bivariate Gaussians for cue1 (using Gaussians X1 and Y1) and for cue2 (using Gaussians X2 and Y2). Given that X1 and Y1 are independent and the same is the case for X2 and Y2, the bivariate Gaussian samples can be simply obtained by drawing samples from each 1-D Gaussian independently. The sampling 1-D Gaussians can be done using randn function of MATLAB. randn functions draws samples from a 1-D Gaussian of standard deviation = 1 and mean = 0. The standard deviation of the Gaussian can be changed by multiplying the output sample by the standard deviation of choice. Additionally, the mean can be incorporated by translating the output by the desired mean.</p><pre class="codeinput">target_radius = 1; <span class="comment">% radius of the target</span>
+x_center = 0;<span class="comment">%randi(10); % The x-coordinate of the center of the target</span>
+y_center = 0;<span class="comment">%randi(10); % The y-coordinate of the center of the target</span>
+
+var1 = 1; <span class="comment">% variance of both Gaussians for cue1</span>
+var2 = 4; <span class="comment">% variance of both Gaussians for cue2</span>
+
+trials = 1e6; <span class="comment">% Number of trials to be run for the Monte Carlo simulation</span>
+
+<span class="comment">% Drawing samples from Gaussians</span>
+X1 = x_center + sqrt(var1) .* randn(trials, 1);
+X2 = x_center + sqrt(var2) .* randn(trials, 1);
+Y1 = y_center + sqrt(var1) .* randn(trials, 1);
+Y2 = y_center + sqrt(var2) .* randn(trials, 1);
+</pre><h2 id="4">a)</h2><p>If Michael uses only cue 1, then the samples drawn from the Gaussian X1 and Y1 are the x and y coordinates of the estimates of the center of the target. The estimate is correct if it lies inside the circle of radius 1 around the center. The radial distance of each estimate from the center can be computed using the Euclidean distance formula:</p><p><img src="Q2_eq08635021186346304562.png" alt="$$d = \sqrt{(x - \bar{x})^2 + (y - \bar{y})^2} $$" style="width:122px;height:14px;"></p><p>And the estimate is correct if this radial distance is less than or equal to the radius of the circle which is 1.</p><p>The probability of correct estimate can then be computed as the ratio of the count of the correct estimates by the total number of trials.</p><pre class="codeinput">figure();
+scatter(X1, Y1, 1)
+hold <span class="string">on</span>;
+plot(x_center, y_center, <span class="string">'r*'</span>)
+xlabel(<span class="string">'x coord'</span>)
+ylabel(<span class="string">'y coord'</span>)
+title(<span class="string">'Scatter plot of estimates with only cue_1'</span>)
+axis <span class="string">equal</span>
+
+radial_distance = sqrt((X1 - x_center).^2 + (Y1 - y_center).^2);
+count_correct = sum(radial_distance(radial_distance &lt;= target_radius));
+prob_correct = count_correct/trials
+</pre><pre class="codeoutput">
+prob_correct =
+
+    0.2494
+
+</pre><img vspace="5" hspace="5" src="Q2_01.png" alt=""> <h2 id="9">b)</h2><p>If instead, Michael were to use both the cues, then he combines X1, X2 and Y1, Y2 to compute the estimate X, Y. The weighting used to compute X is:</p><p><img src="Q2_eq05213356130081117950.png" alt="$$X = wX_1 + (1-w)X_2 $$" style="width:108px;height:11px;"></p><p>Similarly, the weighting used to compute Y is:</p><p><img src="Q2_eq10771676612380471049.png" alt="$$Y = vY_1 + (1-v)Y_2 $$" style="width:97px;height:11px;"></p><p>Assuming that Michael is making an optimal choice, then the goal would be to minimize the variance of the estimates X and Y. From Q1, we know that when the variances are minimized, the weights are given by:</p><p><img src="Q2_eq13415321353101153352.png" alt="$$w = \frac{var(X_2)}{var(X_1) + var(X_2)} $$" style="width:116px;height:26px;"></p><p>Similarly,</p><p><img src="Q2_eq05760239527663549018.png" alt="$$v = \frac{var(Y_2)}{var(Y_1) + var(Y_2)} $$" style="width:108px;height:26px;"></p><p>These weights can then be used to compute the X and Y estimates of the center.</p><p>Following the procedure in (a), the correct estimates can then be computed by checking if the radial estimate of each of these estimates from the center of the target circle is within radius of 1. The probability correct is then the ratio of the count of the correct estimates and the total number of trials.</p><pre class="codeinput">w = var2/(var1 + var2);
+v = var2/(var1 + var2);
+
+X = w * X1 + (1 - w) * X2;
+Y = v .* Y1 + (1 - v) .* Y2;
+
+figure();
+scatter(X, Y, 1)
+hold <span class="string">on</span>;
+plot(x_center, y_center, <span class="string">'r*'</span>)
+xlabel(<span class="string">'x coord'</span>)
+ylabel(<span class="string">'y coord'</span>)
+title(<span class="string">'Scatter plot of estimates with both cues'</span>)
+axis <span class="string">equal</span>
+
+radial_distance = sqrt((X - x_center).^2 + (Y - y_center).^2);
+count_correct = sum(radial_distance(radial_distance &lt;= target_radius));
+prob_correct = count_correct/trials
+</pre><pre class="codeoutput">
+prob_correct =
+
+    0.2901
+
+</pre><img vspace="5" hspace="5" src="Q2_02.png" alt=""> <p>From the simulation, we see that weighing the two cues optimally would increase the probability of Michael hitting the target correctly.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%%
+% This problem extends problem 1 to a 2-dimensional case. The target is a
+% circle of radius = 1. There are two cues both of which are bivariate
+% Gaussians with different variances. Since these are unbiased cues, their
+% mean estimates are the actual position of the target center. The task
+% here is to construct bivariate Gaussians for cue1 (using Gaussians X1 and
+% Y1) and for cue2 (using Gaussians X2 and Y2). Given that X1 and Y1 are
+% independent and the same is the case for X2 and Y2, the bivariate
+% Gaussian samples can be simply obtained by drawing samples from each 1-D
+% Gaussian independently. The sampling 1-D Gaussians can be done using
+% randn function of MATLAB. randn functions draws samples from a 1-D
+% Gaussian of standard deviation = 1 and mean = 0. The standard deviation of the
+% Gaussian can be changed by multiplying the output sample by the standard
+% deviation of choice. Additionally, the mean can be incorporated by
+% translating the output by the desired mean.
+%%
+
+target_radius = 1; % radius of the target
+x_center = 0;%randi(10); % The x-coordinate of the center of the target
+y_center = 0;%randi(10); % The y-coordinate of the center of the target
+
+var1 = 1; % variance of both Gaussians for cue1
+var2 = 4; % variance of both Gaussians for cue2
+
+trials = 1e6; % Number of trials to be run for the Monte Carlo simulation
+
+% Drawing samples from Gaussians
+X1 = x_center + sqrt(var1) .* randn(trials, 1);
+X2 = x_center + sqrt(var2) .* randn(trials, 1);
+Y1 = y_center + sqrt(var1) .* randn(trials, 1);
+Y2 = y_center + sqrt(var2) .* randn(trials, 1);
+
+%% a)
+% If Michael uses only cue 1, then the samples drawn from the Gaussian X1
+% and Y1 are the x and y coordinates of the estimates of the center of the
+% target. The estimate is correct if it lies inside the circle of radius 1
+% around the center. The radial distance of each estimate from the center
+% can be computed using the Euclidean distance formula:
+%%
+% $$d = \sqrt{(x - \bar{x})^2 + (y - \bar{y})^2} $$
+%%
+% And the estimate is correct if this radial distance is less than or equal
+% to the radius of the circle which is 1.
+%%
+% The probability of correct estimate can then be computed as the ratio of
+% the count of the correct estimates by the total number of trials.
+%%
+figure();
+scatter(X1, Y1, 1)
+hold on;
+plot(x_center, y_center, 'r*')
+xlabel('x coord')
+ylabel('y coord')
+title('Scatter plot of estimates with only cue_1')
+axis equal
+
+radial_distance = sqrt((X1 - x_center).^2 + (Y1 - y_center).^2);
+count_correct = sum(radial_distance(radial_distance <= target_radius));
+prob_correct = count_correct/trials
+
+%% b)
+% If instead, Michael were to use both the cues, then he combines X1, X2
+% and Y1, Y2 to compute the estimate X, Y. The weighting used to compute X
+% is:
+%%
+% $$X = wX_1 + (1-w)X_2 $$
+%%
+% Similarly, the weighting used to compute Y is:
+%%
+% $$Y = vY_1 + (1-v)Y_2 $$
+%%
+% Assuming that Michael is making an optimal choice, then the goal would be
+% to minimize the variance of the estimates X and Y. From Q1, we know that
+% when the variances are minimized, the weights are given by:
+%%
+% $$w = \frac{var(X_2)}{var(X_1) + var(X_2)} $$
+%%
+% Similarly,
+%%
+% $$v = \frac{var(Y_2)}{var(Y_1) + var(Y_2)} $$
+%%
+% These weights can then be used to compute the X and Y estimates of the
+% center.
+%%
+% Following the procedure in (a), the correct estimates can then be
+% computed by checking if the radial estimate of each of these estimates
+% from the center of the target circle is within radius of 1. The
+% probability correct is then the ratio of the count of the correct
+% estimates and the total number of trials.
+%%
+% 
+w = var2/(var1 + var2);
+v = var2/(var1 + var2);
+
+X = w * X1 + (1 - w) * X2;
+Y = v .* Y1 + (1 - v) .* Y2;
+
+figure();
+scatter(X, Y, 1)
+hold on;
+plot(x_center, y_center, 'r*')
+xlabel('x coord')
+ylabel('y coord')
+title('Scatter plot of estimates with both cues')
+axis equal
+
+radial_distance = sqrt((X - x_center).^2 + (Y - y_center).^2);
+count_correct = sum(radial_distance(radial_distance <= target_radius));
+prob_correct = count_correct/trials
+
+%% 
+% From the simulation, we see that weighing the two cues optimally would
+% increase the probability of Michael hitting the target correctly.
+##### SOURCE END #####
+--></body></html>
