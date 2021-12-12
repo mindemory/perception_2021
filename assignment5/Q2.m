@@ -18,8 +18,8 @@ clear; close all; clc;
 %%
 
 target_radius = 1; % radius of the target
-x_center = 0;%randi(10); % The x-coordinate of the center of the target
-y_center = 0;%randi(10); % The y-coordinate of the center of the target
+x_center = randi(10); % The x-coordinate of the center of the target
+y_center = randi(10); % The y-coordinate of the center of the target
 
 var1 = 1; % variance of both Gaussians for cue1
 var2 = 4; % variance of both Gaussians for cue2
@@ -57,7 +57,7 @@ title('Scatter plot of estimates with only cue_1')
 axis equal
 
 radial_distance = sqrt((X1 - x_center).^2 + (Y1 - y_center).^2);
-count_correct = sum(radial_distance(radial_distance <= target_radius));
+count_correct = sum(radial_distance <= target_radius);
 prob_correct = count_correct/trials
 
 %% b)
@@ -107,7 +107,7 @@ title('Scatter plot of estimates with both cues')
 axis equal
 
 radial_distance = sqrt((X - x_center).^2 + (Y - y_center).^2);
-count_correct = sum(radial_distance(radial_distance <= target_radius));
+count_correct = sum(radial_distance <= target_radius);
 prob_correct = count_correct/trials
 
 %% 

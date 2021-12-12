@@ -1,0 +1,223 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Q3</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-12"><meta name="DC.source" content="Q3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">a)</a></li><li><a href="#9">b)</a></li></ul></div><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><h2 id="2">a)</h2><p>Denis is present in a one-dimensional shopping mail. Let the location of Denis be given by X. The prior of Denis' location is a Gaussian distribution with mean of 50 and a variance of 64. The posterior distribution is computed based on the location of coffee cup. The likelihood of the cup being at the location given Denis' position follows a Gaussian distribution with mean 30 and a variance of 100. The goal is to compute the posterior distribution.</p><p>The prior is p(X). The likelihood is p(C|X) and the posterior is p(X|C). Using Bayes' rule, the posterior can be computed as:</p><p><img src="Q3_eq16032920993871451874.png" alt="$$p(X|C) = \frac{p(C|X) p(X)}{p(C)} $$" style="width:112px;height:26px;"></p><p>Here p(C) is a normalizing factor and hence can be ignored for our purposes. Therefore, we have:</p><p><img src="Q3_eq16534801017687100921.png" alt="$$p(X|C) \sim p(C|X) p(X) $$" style="width:110px;height:11px;"></p><p>Using this formula, we can compute the posterior given the likelihood and prior distributions.</p><pre class="codeinput">X = 0:100; <span class="comment">% possible locations of Denis</span>
+
+<span class="comment">% prior</span>
+Denis_prior_mean = 50;
+Denis_prior_variance = 64;
+prior_unnormalized = normpdf(X, Denis_prior_mean, sqrt(Denis_prior_variance));
+prior = prior_unnormalized ./ sum(prior_unnormalized);
+
+<span class="comment">% likelihood</span>
+likelihood_mean = 30;
+likelihood_variance = 100;
+likelihood_unnormalized = normpdf(X, likelihood_mean, sqrt(likelihood_variance));
+likelihood = likelihood_unnormalized ./ sum(likelihood_unnormalized);
+
+<span class="comment">% posterior</span>
+posterior_unnormalized = prior .* likelihood;
+posterior = posterior_unnormalized ./ sum(posterior_unnormalized);
+
+figure();
+plot(X, prior, <span class="string">'DisplayName'</span>, <span class="string">'prior'</span>, <span class="string">'LineWidth'</span>, 2)
+hold <span class="string">on</span>;
+plot(X, likelihood, <span class="string">'DisplayName'</span>, <span class="string">'likelihood'</span>, <span class="string">'LineWidth'</span>, 2)
+plot(X, posterior, <span class="string">'DisplayName'</span>, <span class="string">'posterior'</span>, <span class="string">'LineWidth'</span>, 2)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Probability'</span>)
+ylim([0, 0.1])
+legend()
+</pre><img vspace="5" hspace="5" src="Q3_01.png" alt=""> <h2 id="9">b)</h2><p>In the scenario where the coffee cup is not that cold, the variance of the likelihood Gaussian decreases. However, the process of computing the posterior from the likelihood and prior remains the same.</p><pre class="codeinput">X = 0:100; <span class="comment">% possible locations of Denis</span>
+
+<span class="comment">% prior</span>
+Denis_prior_mean = 50;
+Denis_prior_variance = 64;
+prior_unnormalized = normpdf(X, Denis_prior_mean, sqrt(Denis_prior_variance));
+prior = prior_unnormalized ./ sum(prior_unnormalized);
+
+<span class="comment">% likelihood</span>
+likelihood_mean = 30;
+likelihood_variance = 36;
+likelihood_unnormalized = normpdf(X, likelihood_mean, sqrt(likelihood_variance));
+likelihood = likelihood_unnormalized ./ sum(likelihood_unnormalized);
+
+<span class="comment">% posterior</span>
+posterior_unnormalized = prior .* likelihood;
+posterior = posterior_unnormalized ./ sum(posterior_unnormalized);
+
+figure();
+plot(X, prior, <span class="string">'DisplayName'</span>, <span class="string">'prior'</span>, <span class="string">'LineWidth'</span>, 2)
+hold <span class="string">on</span>;
+plot(X, likelihood, <span class="string">'DisplayName'</span>, <span class="string">'likelihood'</span>, <span class="string">'LineWidth'</span>, 2)
+plot(X, posterior, <span class="string">'DisplayName'</span>, <span class="string">'posterior'</span>, <span class="string">'LineWidth'</span>, 2)
+xlabel(<span class="string">'X'</span>)
+ylabel(<span class="string">'Probability'</span>)
+ylim([0, 0.1])
+legend()
+</pre><img vspace="5" hspace="5" src="Q3_02.png" alt=""> <p>We can see that as the mean of the likelihood than the mean of the prior, the likelihood pulls the posterior to have a lower mean in (a). The pull is also determined the variance of the likelihood. If the variance of the likelihood is high, then the certainty of the mean is lower and hence its impact on the pull of the posterior is weaker. On the other hand, if the variance is lower then the certainty of the mean is higher and hence its impact on the pull of the posterior is stronger. Therefore, compared to (a), we can see that the posterior in (b) has a lower mean and also a narrower distribution.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%% a)
+% Denis is present in a one-dimensional shopping mail. Let the
+% location of Denis be given by X. The prior of Denis' location is a
+% Gaussian distribution with mean of 50 and a variance of 64. The posterior
+% distribution is computed based on the location of coffee cup. The
+% likelihood of the cup being at the location given Denis' position
+% follows a Gaussian distribution with mean 30 and a variance of 100. The
+% goal is to compute the posterior distribution.
+%%
+% The prior is p(X). The likelihood is p(C|X) and the posterior is p(X|C).
+% Using Bayes' rule, the posterior can be computed as:
+%%
+% $$p(X|C) = \frac{p(C|X) p(X)}{p(C)} $$
+%%
+% Here p(C) is a normalizing factor and hence can be ignored for our
+% purposes. Therefore, we have:
+%%
+% $$p(X|C) \sim p(C|X) p(X) $$
+%%
+% Using this formula, we can compute the posterior given the likelihood and
+% prior distributions.
+%%
+X = 0:100; % possible locations of Denis
+
+% prior
+Denis_prior_mean = 50;
+Denis_prior_variance = 64;
+prior_unnormalized = normpdf(X, Denis_prior_mean, sqrt(Denis_prior_variance));
+prior = prior_unnormalized ./ sum(prior_unnormalized);
+
+% likelihood
+likelihood_mean = 30;
+likelihood_variance = 100;
+likelihood_unnormalized = normpdf(X, likelihood_mean, sqrt(likelihood_variance));
+likelihood = likelihood_unnormalized ./ sum(likelihood_unnormalized);
+
+% posterior
+posterior_unnormalized = prior .* likelihood;
+posterior = posterior_unnormalized ./ sum(posterior_unnormalized);
+
+figure();
+plot(X, prior, 'DisplayName', 'prior', 'LineWidth', 2)
+hold on;
+plot(X, likelihood, 'DisplayName', 'likelihood', 'LineWidth', 2)
+plot(X, posterior, 'DisplayName', 'posterior', 'LineWidth', 2)
+xlabel('X')
+ylabel('Probability')
+ylim([0, 0.1])
+legend()
+
+%% b)
+% In the scenario where the coffee cup is not that cold, the variance of
+% the likelihood Gaussian decreases. However, the process of computing the
+% posterior from the likelihood and prior remains the same.
+%%
+X = 0:100; % possible locations of Denis
+
+% prior
+Denis_prior_mean = 50;
+Denis_prior_variance = 64;
+prior_unnormalized = normpdf(X, Denis_prior_mean, sqrt(Denis_prior_variance));
+prior = prior_unnormalized ./ sum(prior_unnormalized);
+
+% likelihood
+likelihood_mean = 30;
+likelihood_variance = 36;
+likelihood_unnormalized = normpdf(X, likelihood_mean, sqrt(likelihood_variance));
+likelihood = likelihood_unnormalized ./ sum(likelihood_unnormalized);
+
+% posterior
+posterior_unnormalized = prior .* likelihood;
+posterior = posterior_unnormalized ./ sum(posterior_unnormalized);
+
+figure();
+plot(X, prior, 'DisplayName', 'prior', 'LineWidth', 2)
+hold on;
+plot(X, likelihood, 'DisplayName', 'likelihood', 'LineWidth', 2)
+plot(X, posterior, 'DisplayName', 'posterior', 'LineWidth', 2)
+xlabel('X')
+ylabel('Probability')
+ylim([0, 0.1])
+legend()
+
+%%
+% We can see that as the mean of the likelihood than the mean of the prior,
+% the likelihood pulls the posterior to have a lower mean in (a). The pull
+% is also determined the variance of the likelihood. If the variance of the
+% likelihood is high, then the certainty of the mean is lower and hence its
+% impact on the pull of the posterior is weaker. On the other hand, if the
+% variance is lower then the certainty of the mean is higher and hence its
+% impact on the pull of the posterior is stronger. Therefore, compared to
+% (a), we can see that the posterior in (b) has a lower mean and also a
+% narrower distribution.
+##### SOURCE END #####
+--></body></html>

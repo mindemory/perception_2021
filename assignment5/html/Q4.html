@@ -1,0 +1,205 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Q4</title><meta name="generator" content="MATLAB 9.11"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-12-12"><meta name="DC.source" content="Q4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear; close <span class="string">all</span>; clc;
+</pre><p>This problem is identical to the Q2 (b) with multiple cues and each cue having the same variance of 10. Using the same rationale, we can obtain the weight of each cue to be:</p><p><img src="Q4_eq14139115850204708540.png" alt="$$w = \frac{var(X_i)}{\sum_i var(X_i)} $$" style="width:79px;height:27px;"></p><p>Similarly,</p><p><img src="Q4_eq06325280781029529755.png" alt="$$v = \frac{var(X_i)}{\sum_i var(X_i)} $$" style="width:76px;height:27px;"></p><p>Since the variance of each cue is the same, we get:</p><p><img src="Q4_eq08725479062706300601.png" alt="$$w = \frac{1}{num\ of\ cues} $$" style="width:87px;height:25px;"></p><p>Similarly,</p><p><img src="Q4_eq17082690967713537948.png" alt="$$v = \frac{1}{num\ of\ cues} $$" style="width:85px;height:25px;"></p><p>These weights can then be used to compute the X and Y estimates of the center.</p><p>Following the procedure in 2a and 2b, the correct estimates can then be computed by checking if the radial estimate of each of these estimates from the center of the target circle is within radius of 1. The probability correct is then the ratio of the count of the correct estimates and the total number of trials.</p><pre class="codeinput">trials = 1e6; <span class="comment">% Number of trials to be run for the Monte Carlo simulation</span>
+x_center = ones(trials, 1) .* randi(10); <span class="comment">% The x-coordinate of the center of the target</span>
+y_center = ones(trials, 1) .* randi(10); <span class="comment">% The y-coordinate of the center of the target</span>
+gauss_var = 10 .* ones(trials, 1); <span class="comment">% variance of Gaussians for each cue</span>
+target_radius = ones(trials, 1); <span class="comment">% radius of the target</span>
+cue_counts = 1:101; <span class="comment">% number of cues used</span>
+
+<span class="comment">% Drawing samples from Gaussians</span>
+X_cue = x_center + sqrt(gauss_var) .* randn(trials, length(cue_counts));
+Y_cue = y_center + sqrt(gauss_var) .* randn(trials, length(cue_counts));
+
+X = zeros(trials, length(cue_counts)); <span class="comment">% Initializing x choices</span>
+Y = zeros(trials, length(cue_counts)); <span class="comment">% Initializing y choices</span>
+
+<span class="keyword">for</span> cc = cue_counts
+    <span class="comment">% Weights of cues</span>
+    w = ones(cc, 1)./cc;
+    v = ones(cc, 1)./cc;
+    <span class="comment">% Final choices</span>
+    X(:, cc) = X_cue(:, 1:cc) * w;
+    Y(:, cc) = Y_cue(:, 1:cc) * v;
+<span class="keyword">end</span>
+
+radial_distance = sqrt((X - x_center).^2 + (Y - y_center).^2); <span class="comment">% computing radial distance</span>
+count_correct = sum(radial_distance &lt;= target_radius); <span class="comment">% checking for correct hits</span>
+prob_correct = count_correct./trials; <span class="comment">% probability of correct choices</span>
+</pre><p>Now the potential prize that the subject can win is $1000. The expected winning prize can hence be computed as the product of probability correct and the total winning prize. The cost of each cue is $10. Therefore, the total cost of cue is the product of total number of cues used and the cost of each cue. The net winning prize is then simply a difference between the total prize and the cue cost. The maximum winning prize can be obtained using the max function.</p><pre class="codeinput">potential_prize = 1000;
+cue_cost = 10;
+prize = potential_prize .* prob_correct;
+cue_cost = cue_cost .* cue_counts;
+
+net_winning = prize - cue_cost;
+[max_winning, max_win_index] = max(net_winning);
+
+sprintf(<span class="string">'In order to maximize the gain, the simulation suggests that Roozbeh should use approximately %d cues'</span>, max_win_index)
+
+figure()
+plot(cue_counts, net_winning, <span class="string">'r-'</span>)
+hold <span class="string">on</span>;
+plot(cue_counts(max_win_index), max_winning, <span class="string">'b*'</span>)
+xlabel(<span class="string">'Number of cues'</span>)
+ylabel(<span class="string">'Net winning prize'</span>)
+title(<span class="string">'Net win as function of number of cues'</span>)
+</pre><pre class="codeoutput">
+ans =
+
+    'In order to maximize the gain, the simulation suggests that Roozbeh should use approximately 32 cues'
+
+</pre><img vspace="5" hspace="5" src="Q4_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear; close all; clc;
+
+%%
+% This problem is identical to the Q2 (b) with multiple cues and each cue
+% having the same variance of 10. Using the same rationale, we can obtain
+% the weight of each cue to be:
+%%
+% $$w = \frac{var(X_i)}{\sum_i var(X_i)} $$
+%%
+% Similarly,
+%%
+% $$v = \frac{var(X_i)}{\sum_i var(X_i)} $$
+%%
+% Since the variance of each cue is the same, we get:
+%%
+% $$w = \frac{1}{num\ of\ cues} $$
+%%
+% Similarly,
+%%
+% $$v = \frac{1}{num\ of\ cues} $$
+%%
+% These weights can then be used to compute the X and Y estimates of the
+% center.
+%%
+% Following the procedure in 2a and 2b, the correct estimates can then be
+% computed by checking if the radial estimate of each of these estimates
+% from the center of the target circle is within radius of 1. The
+% probability correct is then the ratio of the count of the correct
+% estimates and the total number of trials.
+%%
+trials = 1e6; % Number of trials to be run for the Monte Carlo simulation
+x_center = ones(trials, 1) .* randi(10); % The x-coordinate of the center of the target
+y_center = ones(trials, 1) .* randi(10); % The y-coordinate of the center of the target
+gauss_var = 10 .* ones(trials, 1); % variance of Gaussians for each cue
+target_radius = ones(trials, 1); % radius of the target
+cue_counts = 1:101; % number of cues used
+
+% Drawing samples from Gaussians
+X_cue = x_center + sqrt(gauss_var) .* randn(trials, length(cue_counts));
+Y_cue = y_center + sqrt(gauss_var) .* randn(trials, length(cue_counts));
+
+X = zeros(trials, length(cue_counts)); % Initializing x choices
+Y = zeros(trials, length(cue_counts)); % Initializing y choices
+
+for cc = cue_counts
+    % Weights of cues
+    w = ones(cc, 1)./cc;
+    v = ones(cc, 1)./cc;
+    % Final choices
+    X(:, cc) = X_cue(:, 1:cc) * w;
+    Y(:, cc) = Y_cue(:, 1:cc) * v;
+end
+
+radial_distance = sqrt((X - x_center).^2 + (Y - y_center).^2); % computing radial distance
+count_correct = sum(radial_distance <= target_radius); % checking for correct hits
+prob_correct = count_correct./trials; % probability of correct choices
+
+%%
+% Now the potential prize that the subject can win is $1000. The expected
+% winning prize can hence be computed as the product of probability correct
+% and the total winning prize. The cost of each cue is $10. Therefore, the
+% total cost of cue is the product of total number of cues used and the
+% cost of each cue. The net winning prize is then simply a difference
+% between the total prize and the cue cost. The maximum winning prize can be obtained
+% using the max function.
+%%
+potential_prize = 1000;
+cue_cost = 10;
+prize = potential_prize .* prob_correct;
+cue_cost = cue_cost .* cue_counts;
+
+net_winning = prize - cue_cost;
+[max_winning, max_win_index] = max(net_winning);
+
+sprintf('In order to maximize the gain, the simulation suggests that Roozbeh should use approximately %d cues', max_win_index)
+
+figure()
+plot(cue_counts, net_winning, 'r-')
+hold on;
+plot(cue_counts(max_win_index), max_winning, 'b*')
+xlabel('Number of cues')
+ylabel('Net winning prize')
+title('Net win as function of number of cues')
+##### SOURCE END #####
+--></body></html>
